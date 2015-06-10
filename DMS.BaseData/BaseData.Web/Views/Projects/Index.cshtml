@@ -30,7 +30,7 @@
             <div class="panel-body">
                 <table class="table table-striped">
                     <tr>
-                        <th>
+                        <th class="col-md-1 col-sm-1 col-lg-1">
                             序号
                         </th>
                         <th>
@@ -52,9 +52,11 @@
                                 @Html.DisplayFor(modelItem => item.ProjectName)
                             </td>
                             <td>
-                                @*@Html.ActionLink("编辑", "Edit", new { id = item.ProjectID }) |*@
-                                @*@Html.ActionLink("明细", "Details", new { id = item.ProjectID }) |*@
-                                @Html.ActionLink("删除", "Delete", new { id = item.ProjectID })
+                                <a title="编辑" href="javascript:Edit('@item.ProjectID');"><span class=" glyphicon glyphicon-edit"></span></a>
+                                &nbsp;&nbsp;
+                                <a title="删除" href="javascript:Delete('@item.ProjectID')"><span class="glyphicon glyphicon-trash"></span></a>
+                                &nbsp;&nbsp;
+                                <a title="添加二级" href="javascript:Add();"><span class="glyphicon glyphicon-plus-sign"></span></a>
                             </td>
                         </tr>
                     }
@@ -92,6 +94,36 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myEditModalLable" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myEditModalLable">项目修改</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+                    <div class="form-group">
+                        <label for="Eprojectname" class="col-sm-2 control-label">项目名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="Eprojectname"
+                                   placeholder="请输入项目名称">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="esave" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-cloud-upload"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <script>
         $(function () {
@@ -103,12 +135,53 @@
                     data: { ProjectName: $("#projectname").val() },
                     contentType: 'application/json; charset=utf-8',
                     success: function (data) {
-                        if (data=="OK") {
+                        if (data == "OK") {
                             location.href = "/Projects/Index";
                         }
                     }
                 });
             });
+
+
+
         });
+        function Edit(id) {
+            $.ajax({
+                url: "/Projects/Edit",
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    $("#Eprojectname").val(data);
+                    $('#myEditModal').modal('show');
+                }
+            });
+
+            $("#esave").bind("click", function () {
+                var model = {};
+                model.ProjectID = id;
+                model.ProjectName = $("#Eprojectname").val();
+                $.ajax({
+                    url: "/Projects/Edit",
+                    type: 'POST',
+                    data: { project: JSON.stringify(model) },
+                    success: function (data) {
+                        location.href = "/Projects/Index";
+                    }
+                });
+            });
+        }
+
+        function Delete(obj) {
+            if (confirm("确定要删除?")) {
+                $.ajax({
+                    url: "/Projects/Delete",
+                    type: 'GET',
+                    data: { id: obj },
+                    success: function (data) {
+                        location.href = "/Projects/Index";
+                    }
+                });
+            }
+        }
     </script>
 }

@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using Base.Model;
 using BaseData.DataAccess;
+using Newtonsoft.Json;
 
 namespace BaseData.Web.Controllers
 {
@@ -21,7 +22,6 @@ namespace BaseData.Web.Controllers
         {
             return View(await db.Projects.ToListAsync());
         }
-
         // GET: Projects/Details/5
         public async Task<ActionResult> Details(int? id)
         {
@@ -55,30 +55,6 @@ namespace BaseData.Web.Controllers
             res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return res;
         }
-
-        //// GET: Projects/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
-
-         //POST: Projects/Create
-         //为了防止“过多发布”攻击，请启用要绑定到的特定属性，有关 
-         //详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ProjectID,ProjectName")] Project project)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Projects.Add(project);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-
-            return View(project);
-        }
-
         // GET: Projects/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
@@ -87,27 +63,36 @@ namespace BaseData.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Project project = await db.Projects.FindAsync(id);
+            var res = new JsonResult();
+
             if (project == null)
             {
                 return HttpNotFound();
             }
-            return View(project);
+            else
+            {
+                res.Data = project.ProjectName;
+            }
+            res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return res;
         }
 
         // POST: Projects/Edit/5
-        // 为了防止“过多发布”攻击，请启用要绑定到的特定属性，有关 
-        // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ProjectID,ProjectName")] Project project)
+        public async Task<ActionResult> Edit(string project)
         {
+            var res = new JsonResult();
             if (ModelState.IsValid)
             {
-                db.Entry(project).State = EntityState.Modified;
+                db.Entry(JsonConvert.DeserializeObject<Project>(project)).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                res.Data = "OK";
             }
-            return View(project);
+            else
+            {
+                res.Data = "ERROR";
+            }
+            return res;
         }
 
         // GET: Projects/Delete/5
@@ -118,24 +103,20 @@ namespace BaseData.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Project project = await db.Projects.FindAsync(id);
+            var res = new JsonResult();
             if (project == null)
             {
-                return HttpNotFound();
+                res.Data = "ERROR";
             }
-            return View(project);
+            else
+            {
+                db.Projects.Remove(project);
+                await db.SaveChangesAsync();
+                res.Data = "OK";
+            }
+            res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return res;
         }
-
-        // POST: Projects/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
-        {
-            Project project = await db.Projects.FindAsync(id);
-            db.Projects.Remove(project);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
