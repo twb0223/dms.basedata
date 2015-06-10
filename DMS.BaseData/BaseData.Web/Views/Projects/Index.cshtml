@@ -1,0 +1,114 @@
+﻿@model IEnumerable<Base.Model.Project>
+@{
+    ViewBag.Title = "项目管理";
+    var idx = 0;
+}
+
+<div class="page-header">
+    <h1>项目管理</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <h2 class="panel-title">项目管理</h2>
+                        </td>
+                        <td class="pull-right">
+                            @*<a class="btn btn-default btn-sm" href="/Projects/Create">
+                                    <span class="glyphicon glyphicon-plus"></span> 新建
+                                </a>*@
+
+                            <a href="#" data-toggle="modal" data-backdrop="static" data-target="#myModal" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> 新建</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>
+                            序号
+                        </th>
+                        <th>
+                            项目名称
+                        </th>
+                        <th class="col-md-1 col-sm-1 col-lg-1">
+                            操作
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        idx++;
+                        <tr>
+                            <td>
+                                @idx
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProjectName)
+                            </td>
+                            <td>
+                                @*@Html.ActionLink("编辑", "Edit", new { id = item.ProjectID }) |*@
+                                @*@Html.ActionLink("明细", "Details", new { id = item.ProjectID }) |*@
+                                @Html.ActionLink("删除", "Delete", new { id = item.ProjectID })
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">项目新建</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+                    <div class="form-group">
+                        <label for="projectname" class="col-sm-2 control-label">项目名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="projectname"
+                                   placeholder="请输入项目名称">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-cloud-upload"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            $("#save").bind("click", function () {
+                $.ajax({
+                    url: "/Projects/Create",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { ProjectName: $("#projectname").val() },
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        if (data=="OK") {
+                            location.href = "/Projects/Index";
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}
