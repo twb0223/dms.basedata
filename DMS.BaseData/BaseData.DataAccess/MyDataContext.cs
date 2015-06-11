@@ -20,7 +20,7 @@ namespace BaseData.DataAccess
 
         public DbSet<Department> Departments { get; set; }
 
-        public DbSet<ProjectDepartmentRelation> ProjectDepartmentRelations { get; set; }
+        public DbSet<Station> Stations { get; set; }
 
         public MyDataContext()
             : base(ConnectionString)
@@ -28,6 +28,7 @@ namespace BaseData.DataAccess
             //延迟加载
             this.Configuration.LazyLoadingEnabled = true;
             this.Configuration.AutoDetectChangesEnabled = true;  //自动监测变化，默认值为 true  
+            this.Configuration.ProxyCreationEnabled = false;
 
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

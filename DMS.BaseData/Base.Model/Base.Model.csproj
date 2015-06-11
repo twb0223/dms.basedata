@@ -43,8 +43,9 @@
     <Compile Include="Department.cs" />
     <Compile Include="Equement.cs" />
     <Compile Include="Project.cs" />
-    <Compile Include="ProjectDepartmentRelation.cs" />
+    <Compile Include="ProjectType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Station.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
