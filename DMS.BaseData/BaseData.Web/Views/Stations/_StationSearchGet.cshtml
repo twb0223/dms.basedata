@@ -6,22 +6,22 @@
 
 <table class="table table-striped">
     <tr>
-        <th class="col-md-1 col-sm-1 col-lg-1">
+        <th>
             序号
         </th>
-        <th class ="col-md-2 col-sm-2 col-lg-2">
-            点位编号
+        <th>
+            编号
         </th>
         <th>
-            点位名称
+            名称
         </th>
         <th>
-            所属部门
+            部门
         </th>
         <th>
-            所属项目
+            项目
         </th>
-        <th class="col-md-1 col-sm-1 col-lg-1">
+        <th>
             操作
         </th>
     </tr>
@@ -53,8 +53,8 @@
         </tr>
     }
 </table>
-<hr/>
+<hr />
 <div style="padding-top:5px; width:100%">
     <div style="float:left">共 @Model.TotalPageCount 页 @Model.TotalItemCount 条记录，当前为第 @Model.CurrentPageIndex 页</div>
-    @Ajax.Pager(Model, new PagerOptions { PageIndexParameterName = "id", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new MvcAjaxOptions { UpdateTargetId = "station", DataFormId = "searchForm" }, new { style = "float:right"})
+    @Ajax.Pager(Model, new PagerOptions { PageIndexParameterName = "id", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new MvcAjaxOptions { UpdateTargetId = "station", DataFormId = "searchForm" }, new { style = "float:right" })
 </div>
