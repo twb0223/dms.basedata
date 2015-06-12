@@ -1,0 +1,60 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@model Webdiyer.WebControls.Mvc.PagedList<Base.Model.Station>
+@{
+    var idx = 0;
+}
+
+<table class="table table-striped">
+    <tr>
+        <th class="col-md-1 col-sm-1 col-lg-1">
+            序号
+        </th>
+        <th class ="col-md-2 col-sm-2 col-lg-2">
+            点位编号
+        </th>
+        <th>
+            点位名称
+        </th>
+        <th>
+            所属部门
+        </th>
+        <th>
+            所属项目
+        </th>
+        <th class="col-md-1 col-sm-1 col-lg-1">
+            操作
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        idx++;
+        <tr>
+            <td>
+                @idx
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StationID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StationName)
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.DepartmentName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.Project.ProjectName)
+            </td>
+            <td>
+                <a title="编辑" href="javascript:Edit('@item.DepartmentID');"><span class=" glyphicon glyphicon-edit"></span></a>
+                &nbsp;&nbsp;
+                <a title="删除" href="javascript:Delete('@item.DepartmentID')"><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+</table>
+<hr/>
+<div style="padding-top:5px; width:100%">
+    <div style="float:left">共 @Model.TotalPageCount 页 @Model.TotalItemCount 条记录，当前为第 @Model.CurrentPageIndex 页</div>
+    @Ajax.Pager(Model, new PagerOptions { PageIndexParameterName = "id", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new MvcAjaxOptions { UpdateTargetId = "station", DataFormId = "searchForm" }, new { style = "float:right"})
+</div>

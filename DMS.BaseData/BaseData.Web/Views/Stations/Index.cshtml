@@ -1,0 +1,170 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@model Webdiyer.WebControls.Mvc.PagedList<Base.Model.Station>
+@{
+    ViewBag.Title = "点位管理";
+
+}
+<div class="page-header">
+    <ol class="breadcrumb">
+        <li><a href="../Projects/Index">项目管理</a></li>
+        <li><a href="../Departments/Index">部门管理</a></li>
+        <li><a href="../Departments/Index">点位管理</a></li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-8 col-sm-8 col-md-6 col-lg-10">
+                        @using (Ajax.BeginForm("Index", new RouteValueDictionary { { "id", "" } }, new AjaxOptions { UpdateTargetId = "station", HttpMethod = "Get", InsertionMode = InsertionMode.Replace }, new RouteValueDictionary { { "id", "searchForm" }, { "class", "bs-example bs-example-form" }, { "role", "form" } }))
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="key" id="key" placeholder="点位名称、部门名称">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">
+                                                查询
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class=" col-md-1 pull-right">
+                        <a href="#" data-toggle="modal" data-backdrop="static" data-target="#myModal" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> 新建</a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div id="station">
+                    @Html.Partial("_StationSearchGet", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">项目新建</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+
+                    <div class="form-group">
+                        <label for="projectname" class="col-sm-2 control-label">所属项目</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="projectname"></select>
+
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="deptname" class="col-sm-2 control-label">所属部门</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="deptname"></select>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="stationname" class="col-sm-2 control-label">点位名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="stationname"
+                                   placeholder="请输入点位名称">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stationdesc" class="col-sm-2 control-label">点位描述</label>
+                        <div class="col-sm-10">
+                            @*<input type="text" class="form-control" id="stationdesc">*@
+                            <textarea class="form-control" rows="3" id="stationdesc"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{Html.RegisterMvcPagerScriptResource();}
+
+    <script>
+        $(function () {
+            //绑定 项目数据
+            $.getJSON("/api/ProjectsAPI", function (data) {
+                var item = "<option value=-1>=请选择=</option>";
+                for (var i = 0; i < data.length; i++) {
+                    item += ' <option value="' + data[i].ProjectID + '">' + data[i].ProjectName + '</option>';
+                }
+                $("#projectname").empty().append(item);
+                $("#Eprojectname").empty().append(item);
+            });
+
+            $("#projectname").bind("change", function () {
+                var pid = $(this).val();
+                $(this).parents(".form-group").attr("class", "form-group");
+                $.getJSON("/api/DepartmentsAPI", { ProjectID: pid }, function (data) {
+                    var item = "<option value=-1>=请选择=</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        item += ' <option value="' + data[i].DepartmentID + '">' + data[i].DepartmentName + '</option>';
+                    }
+                    $("#deptname").empty().append(item);
+                });
+            });
+
+            $("#deptname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+            $("#stationname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#save").bind("click", function () {
+                var model = {};
+                model.DepartmentID = $("#deptname").val();
+                var projectid = $("#projectname").val();
+                model.StationName = $("#stationname").val();
+                model.StationDes = $("#stationdesc").val();
+                if (projectid == "-1") {
+                    $("#projectname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.DepartmentID == "-1") {
+                    $("#deptname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.StationName==""||model.StationName==undefined||model.StationName==null) {
+                    $("#stationname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                $.ajax({
+                    url: "/Stations/Create",
+                    type: 'POST',
+                    data: { jsonstr: JSON.stringify(model) },
+                    success: function (data) {
+                        if (data == "OK") {
+                            location.href = "/Stations/Index";
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}
