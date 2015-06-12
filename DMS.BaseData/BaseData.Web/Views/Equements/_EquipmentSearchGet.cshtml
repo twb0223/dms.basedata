@@ -1,0 +1,74 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@model Webdiyer.WebControls.Mvc.PagedList<Base.Model.Equement>
+@{
+    var idx = 0;
+    var txt = "";
+}
+<table class="table table-striped">
+    <tr>
+        <th class="col-md-1 col-sm-1 col-lg-1">
+            序号
+        </th>
+        <th class="col-md-2 col-sm-2 col-lg-2">
+            设备编号
+        </th>
+        <th>
+            设备名称
+        </th>
+        <th>
+            设备MAC
+        </th>
+        <th>
+            设备状态
+        </th>
+        <th class="col-md-2 col-sm-2 col-lg-2">
+            最后编辑时间
+        </th>
+        <th class="col-md-1 col-sm-1 col-lg-1">
+            操作
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        idx++;
+        <tr>
+            <td>
+                @idx
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EquipmentID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EquipmentName)
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EquipmentMac)
+            </td>
+            <td>
+                @if (item.Status == 0)
+                {
+                    txt="未分配";
+                }
+                else
+                {
+                    txt ="已分配";
+                }
+                @txt
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateTime)
+            </td>
+            <td>
+                <a title="编辑" href="javascript:Edit('@item.EquipmentID');"><span class=" glyphicon glyphicon-edit"></span></a>
+                &nbsp;&nbsp;
+                <a title="删除" href="javascript:Delete('@item.EquipmentID')"><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+</table>
+<hr />
+<div style="padding-top:5px; width:100%">
+    <div style="float:left">共 @Model.TotalPageCount 页 @Model.TotalItemCount 条记录，当前为第 @Model.CurrentPageIndex 页</div>
+    @Ajax.Pager(Model, new PagerOptions { PageIndexParameterName = "id", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new MvcAjaxOptions { UpdateTargetId = "equipment", DataFormId = "searchForm" }, new { style = "float:right" })
+</div>

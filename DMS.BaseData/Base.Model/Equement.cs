@@ -6,7 +6,6 @@ namespace Base.Model
     public class Equement
     {
         [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public string EquipmentID { get; set; }
 
         [MaxLength(50)]
@@ -23,6 +22,16 @@ namespace Base.Model
         [MaxLength(20)]
         public string EquipmentDisk { get; set; }
 
+
+        public int EqumentType { get; set; }
+
+        public int OsType { get; set; }
+
+        /// <summary>
+        /// 设备状态：0：未分配；1：已分配
+        /// </summary>
+        public int Status { get; set; }
+
         /// <summary>
         /// 设备信息变更标识，供通讯服务使用
         /// </summary>
@@ -31,7 +40,7 @@ namespace Base.Model
 
         public DateTime? CreateTime { get; set; }
 
-        public DateTime? CreateBy { get; set; }
+        public string CreateBy { get; set; }
 
 
     }

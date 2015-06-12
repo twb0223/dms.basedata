@@ -1,0 +1,381 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@model Webdiyer.WebControls.Mvc.PagedList<Base.Model.Equement>
+@{
+    ViewBag.Title = "设备管理";
+}
+<div class="page-header">
+    <ol class="breadcrumb">
+        <li><a href="../Equements/Index">设备管理</a></li>
+        @*<li><a href="../Departments/Index">部门管理</a></li>
+            <li><a href="../Departments/Index">点位管理</a></li>*@
+    </ol>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-8 col-sm-8 col-md-6 col-lg-10">
+                        @using (Ajax.BeginForm("Index", new RouteValueDictionary { { "id", "" } }, new AjaxOptions { UpdateTargetId = "equipment", HttpMethod = "Get", InsertionMode = InsertionMode.Replace }, new RouteValueDictionary { { "id", "searchForm" }, { "class", "bs-example bs-example-form" }, { "role", "form" } }))
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="key" id="key" placeholder="设备名称，MAC">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">
+                                                查询
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class=" col-md-1 pull-right">
+                        <a href="#" data-toggle="modal" data-backdrop="static" data-target="#myModal" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> 新建</a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div id="equipment">
+                    @Html.Partial("_EquipmentSearchGet", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">新建设备</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+                    <div class="form-group">
+                        <label for="equno" class="col-sm-2 control-label">设备ID</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="equno" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="equname" class="col-sm-2 control-label">设备名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="equname"
+                                   placeholder="请输入设备名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="equmac" class="col-sm-2 control-label">设备MAC</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="equmac"
+                                   placeholder="请输入设备MAC">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="equcpu" class="col-sm-2 control-label">CPU类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="equcpu">
+                                <option value="未知">=请选择=</option>
+                                <option value="X86">X86</option>
+                                <option value="ARM">ARM</option>
+                                <option value="mips">mips</option>
+                                <option value="xScale">xScale</option>
+                                <option value="其他">其他</option>
+
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="equStorageType" class="col-sm-2 control-label">存储介质</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="equStorageType">
+                                <option value="未知">=请选择=</option>
+                                <option value="Sd/cf卡">Sd/cf卡</option>
+                                <option value="硬盘">硬盘</option>
+                                <option value="Flash">Flash</option>
+                                <option value="其他">其他</option>
+
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="equType" class="col-sm-2 control-label">设备类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="equType">
+                                <option value=-1>=请选择=</option>
+                                <option value=0>多媒体播放器</option>
+                                <option value=1>移动终端</option>
+                                <option value=2>一体机</option>
+                                <option value=3>电子展台</option>
+                                <option value=4>交互终端</option>
+                                <option value=5>其他</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="osType" class="col-sm-2 control-label">操作系统</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="osType">
+                                <option value=-1>=请选择=</option>
+                                <option value=0>Windows</option>
+                                <option value=1>Android</option>
+                                <option value=2>Linux</option>
+                                <option value=3>IOS</option>
+                                <option value=4>其他</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myEditModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myEditModalLabel">新建设备</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+                    <div class="form-group">
+                        <label for="edequno" class="col-sm-2 control-label">设备ID</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edequno" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edequname" class="col-sm-2 control-label">设备名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edequname"
+                                   placeholder="请输入设备名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edequmac" class="col-sm-2 control-label">设备MAC</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edequmac"
+                                   placeholder="请输入设备MAC">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edequcpu" class="col-sm-2 control-label">CPU类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="edequcpu">
+                                <option value="未知">=请选择=</option>
+                                <option value="X86">X86</option>
+                                <option value="ARM">ARM</option>
+                                <option value="mips">mips</option>
+                                <option value="xScale">xScale</option>
+                                <option value="其他">其他</option>
+
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edequStorageType" class="col-sm-2 control-label">存储介质</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="edequStorageType">
+                                <option value="未知">=请选择=</option>
+                                <option value="Sd/cf卡">Sd/cf卡</option>
+                                <option value="硬盘">硬盘</option>
+                                <option value="Flash">Flash</option>
+                                <option value="其他">其他</option>
+
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edequType" class="col-sm-2 control-label">设备类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="edequType">
+                                <option value=-1>=请选择=</option>
+                                <option value=0>多媒体播放器</option>
+                                <option value=1>移动终端</option>
+                                <option value=2>一体机</option>
+                                <option value=3>电子展台</option>
+                                <option value=4>交互终端</option>
+                                <option value=5>其他</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edosType" class="col-sm-2 control-label">操作系统</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="edosType">
+                                <option value=-1>=请选择=</option>
+                                <option value=0>Windows</option>
+                                <option value=1>Android</option>
+                                <option value=2>Linux</option>
+                                <option value=3>IOS</option>
+                                <option value=4>其他</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="esave" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script>
+        Date.prototype.Format = function (fmt) { //author: meizz
+            var o = {
+                "M+": this.getMonth() + 1,                 //月份
+                "d+": this.getDate(),                    //日
+                "h+": this.getHours(),                   //小时
+                "m+": this.getMinutes(),                 //分
+                "s+": this.getSeconds(),                 //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds()             //毫秒
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+        $(function () {
+            $('#myModal').on('show.bs.modal', function () {
+                $("#equno").val("OVI" + new Date().Format("yyyyMMddhhmmss"));
+            })
+            $("#save").bind("click", function () {
+                var model = {};
+                model.EquipmentID = $("#equno").val();
+                model.EquipmentName = $("#equname").val();
+                model.EquipmentMac = $("#equmac").val();
+                model.EqumentType = $("#equType").val();
+                model.EquipmentCPU = $("#equcpu").val();
+                model.EquipmentDisk = $("#equStorageType").val();
+                model.OsType = $("#osType").val();
+                if (model.EquipmentName == "") {
+                    $("#equname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.EquipmentMac == "") {
+                    $("#equmac").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                $.ajax({
+                    url: "/Equements/Create",
+                    type: 'POST',
+                    data: { jsonstr: JSON.stringify(model) },
+                    success: function (data) {
+                        if (data == "OK") {
+                            location.href = "/Equements/Index";
+                        }
+                    }
+                });
+            });
+
+            $("#equname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#equmac").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+            $("#edequname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#edequmac").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+        });
+        function Delete(id) {
+            if (confirm("提示:以下操作将会删除该设备,是否继续?")) {
+                $.ajax({
+                    url: "/Equements/Delete",
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (data) {
+                        location.href = "/Equements/Index";
+                    }
+                });
+            }
+        }
+        function Edit(id) {
+            $.ajax({
+                url: "/Equements/GetForEdit",
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    $("#edequno").val(data.EquipmentID);
+                    $("#edequname").val(data.EquipmentName);
+                    $("#edequmac").val(data.EquipmentMac);
+                    $("#edequType").val(data.EqumentType);
+                    $("#edequcpu").val(data.EquipmentCPU);
+                    $("#edosType").val(data.OsType);
+                    $("#edequStorageType").val(data.EquipmentDisk);
+                    $('#myEditModal').modal('show');
+
+                }
+            });
+            $("#esave").bind("click", function () {
+                var model = {};
+                model.EquipmentID = $("#edequno").val();
+                model.EquipmentName = $("#edequname").val();
+                model.EquipmentMac = $("#edequmac").val();
+                model.EqumentType = $("#edequType").val();
+                model.EquipmentCPU = $("#edequcpu").val();
+                model.EquipmentDisk = $("#edequStorageType").val();
+                model.OsType = $("#edosType").val();
+                if (model.EquipmentName == "") {
+                    $("#edequname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.EquipmentMac == "") {
+                    $("#edequmac").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+
+                $.ajax({
+                    url: "/Equements/Edit",
+                    type: 'POST',
+                    data: { jsonstr: JSON.stringify(model) },
+                    success: function (data) {
+                        location.href = "/Equements/Index";
+                    }
+                });
+            });
+        }
+    </script>
+}

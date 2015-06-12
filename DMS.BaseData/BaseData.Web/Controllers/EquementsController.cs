@@ -15,9 +15,10 @@ using Newtonsoft.Json;
 
 namespace BaseData.Web.Controllers
 {
-    public class StationsController : Controller
+    public class EquementsController : Controller
     {
         private MyDataContext db = new MyDataContext();
+
         public ActionResult Index(string key, int id = 1)
         {
             return ajaxSearchGetResult(key, id);
@@ -25,28 +26,42 @@ namespace BaseData.Web.Controllers
 
         private ActionResult ajaxSearchGetResult(string key, int id = 1)
         {
-            var qry = db.Stations.Include(x => x.Department).Include(x => x.Department.Project).AsQueryable();
-
+            var qry = db.Equements.AsQueryable();
             if (!String.IsNullOrWhiteSpace(key))
-                qry = qry.Where(x => x.StationName.Contains(key) || x.Department.DepartmentName.Contains(key));
-            var model = qry.OrderByDescending(a => a.StationID).ToPagedList(id, 10);
+                qry = qry.Where(x => x.EquipmentMac.Contains(key) || x.EquipmentName.Contains(key)||x.EquipmentID.Contains(key));
+            var model = qry.OrderByDescending(a => a.CreateTime).ToPagedList(id, 10);
             if (Request.IsAjaxRequest())
-                return PartialView("_StationSearchGet", model);
+                return PartialView("_EquipmentSearchGet", model);
             return View(model);
         }
 
-        // POST: Stations/Create
-        // 为了防止“过多发布”攻击，请启用要绑定到的特定属性，有关 
-        // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
+        // GET: Equements/Details/5
+        public async Task<ActionResult> Details(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Equement equement = await db.Equements.FindAsync(id);
+            if (equement == null)
+            {
+                return HttpNotFound();
+            }
+            return View(equement);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create(string jsonstr)
         {
             var res = new JsonResult();
             if (ModelState.IsValid)
             {
-                var model = JsonConvert.DeserializeObject<Station>(jsonstr);
-                model.StationID = "S" + DateTime.Now.ToString("yyyyMMddHHmmss");
-                db.Stations.Add(model);
+                var model = JsonConvert.DeserializeObject<Equement>(jsonstr);
+                model.Status = 0;
+                model.CreateTime = DateTime.Now;
+                model.CreateBy = "Client";
+                model.ClientChangeFlag = Guid.NewGuid().ToString();
+                db.Equements.Add(model);
                 await db.SaveChangesAsync();
                 res.Data = "OK";
             }
@@ -56,31 +71,26 @@ namespace BaseData.Web.Controllers
             }
             return res;
         }
-
         public JsonResult GetForEdit(string id)
         {
-            Station model = db.Stations.Include(x=>x.Department).Include(x=>x.Department.Project).FirstOrDefault(x=>x.StationID==id);
             var res = new JsonResult();
-            var vm = new
-            {
-                DepartmentID=model.DepartmentID,
-                ProjectName = model.Department.Project.ProjectName,
-                DepartmentName = model.Department.DepartmentName,
-                StationName = model.StationName,
-                StationDes = model.StationDes
-            };
-            res.Data = vm;
+            Equement model = db.Equements.FirstOrDefault(x => x.EquipmentID == id);
+            res.Data = model;
             res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return res;
         }
-
         [HttpPost]
         public async Task<ActionResult> Edit(string jsonstr)
         {
             var res = new JsonResult();
             if (ModelState.IsValid)
             {
-                db.Entry(JsonConvert.DeserializeObject<Station>(jsonstr)).State = EntityState.Modified;
+                var model = JsonConvert.DeserializeObject<Equement>(jsonstr);
+                model.Status = 0;
+                model.CreateTime = DateTime.Now;
+                model.CreateBy = "Client";
+                model.ClientChangeFlag = Guid.NewGuid().ToString();
+                db.Entry(model).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 res.Data = "OK";
             }
@@ -97,15 +107,15 @@ namespace BaseData.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Station sat = await db.Stations.FindAsync(id);
+            Equement model = await db.Equements.FindAsync(id);
             var res = new JsonResult();
-            if (sat == null)
+            if (model == null)
             {
                 res.Data = "ERROR";
             }
             else
             {
-                db.Stations.Remove(sat);
+                db.Equements.Remove(model);
                 await db.SaveChangesAsync();
                 res.Data = "OK";
             }

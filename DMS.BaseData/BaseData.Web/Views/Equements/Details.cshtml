@@ -1,0 +1,74 @@
+﻿@model Base.Model.Equement
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Equement</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EquipmentName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EquipmentName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EquipmentMac)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EquipmentMac)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EquipmentCPU)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EquipmentCPU)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EquipmentDisk)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EquipmentDisk)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClientChangeFlag)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClientChangeFlag)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateBy)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.EquipmentID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
