@@ -17,11 +17,12 @@ namespace BaseData.Web.Controllers
     {
         private MyDataContext db = new MyDataContext();
 
-        // GET: Projects
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            return View(await db.Projects.ToListAsync());
+            var list = db.Projects.Include(x => x.ProjectType).ToList();
+            return View(list);
         }
+
         // GET: Projects/Details/5
         public async Task<ActionResult> Details(int? id)
         {
@@ -36,24 +37,31 @@ namespace BaseData.Web.Controllers
             }
             return View(project);
         }
-
-        public JsonResult Create(string ProjectName)
+        public JsonResult GetProjectType()
         {
-            Project project = new Project();
-            project.ProjectName = ProjectName;
+            var res = new JsonResult();
+            res.Data = db.ProjectType.ToList();
+            res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return res;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(string jsonstr)
+        {
             var res = new JsonResult();
             if (ModelState.IsValid)
             {
-                db.Projects.Add(project);
-                db.SaveChanges();
+                //db.Entry(JsonConvert.DeserializeObject<Department>(jsonstr)).State = EntityState.Added;
+                db.Projects.Add(JsonConvert.DeserializeObject<Project>(jsonstr));
+                await db.SaveChangesAsync();
                 res.Data = "OK";
             }
             else
             {
-                res.Data = "Error";
+                res.Data = "ERROR";
             }
-            res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return res;
+
         }
         // GET: Projects/Edit/5
         public async Task<ActionResult> Edit(int? id)
@@ -71,7 +79,13 @@ namespace BaseData.Web.Controllers
             }
             else
             {
-                res.Data = project.ProjectName;
+                var vm = new
+                {
+                    ProjectID = project.ProjectID,
+                    ProjectName = project.ProjectName,
+                    ProjectTypeID = project.ProjectTypeID
+                };
+                res.Data = vm;
             }
             res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return res;

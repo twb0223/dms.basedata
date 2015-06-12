@@ -25,7 +25,7 @@ namespace BaseData.Web.Controllers
 
         private ActionResult ajaxSearchGetResult(string key, int id = 1)
         {
-            var qry = db.Stations.Include(x => x.Department).Include(x=>x.Department.Project).AsQueryable();
+            var qry = db.Stations.Include(x => x.Department).Include(x => x.Department.Project).AsQueryable();
 
             if (!String.IsNullOrWhiteSpace(key))
                 qry = qry.Where(x => x.StationName.Contains(key) || x.Department.DepartmentName.Contains(key));
@@ -58,63 +58,62 @@ namespace BaseData.Web.Controllers
             return res;
         }
 
-        // GET: Stations/Edit/5
-        public async Task<ActionResult> Edit(string id)
+
+        public JsonResult GetForEdit(string id)
         {
-            if (id == null)
+            Station model = db.Stations.Include(x=>x.Department).Include(x=>x.Department.Project).FirstOrDefault(x=>x.StationID==id);
+            var res = new JsonResult();
+            var vm = new
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Station station = await db.Stations.FindAsync(id);
-            if (station == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName", station.DepartmentID);
-            return View(station);
+                DepartmentID=model.DepartmentID,
+                ProjectName = model.Department.Project.ProjectName,
+                DepartmentName = model.Department.DepartmentName,
+                StationName = model.StationName,
+                StationDes = model.StationDes
+            };
+            res.Data = vm;
+            res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return res;
         }
 
-        // POST: Stations/Edit/5
-        // 为了防止“过多发布”攻击，请启用要绑定到的特定属性，有关 
-        // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "StationID,StationName,StationDes,DepartmentID")] Station station)
+        public async Task<ActionResult> Edit(string jsonstr)
         {
+            var res = new JsonResult();
             if (ModelState.IsValid)
             {
-                db.Entry(station).State = EntityState.Modified;
+                db.Entry(JsonConvert.DeserializeObject<Station>(jsonstr)).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                res.Data = "OK";
             }
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName", station.DepartmentID);
-            return View(station);
+            else
+            {
+                res.Data = "ERROR";
+            }
+            return res;
         }
 
-        // GET: Stations/Delete/5
         public async Task<ActionResult> Delete(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Station station = await db.Stations.FindAsync(id);
-            if (station == null)
+            Station sat = await db.Stations.FindAsync(id);
+            var res = new JsonResult();
+            if (sat == null)
             {
-                return HttpNotFound();
+                res.Data = "ERROR";
             }
-            return View(station);
-        }
-
-        // POST: Stations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(string id)
-        {
-            Station station = await db.Stations.FindAsync(id);
-            db.Stations.Remove(station);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            else
+            {
+                db.Stations.Remove(sat);
+                await db.SaveChangesAsync();
+                res.Data = "OK";
+            }
+            res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return res;
         }
 
         protected override void Dispose(bool disposing)

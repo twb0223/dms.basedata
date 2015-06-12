@@ -155,7 +155,7 @@
         $(function () {
 
             $.getJSON("/api/ProjectsAPI", function (data) {
-                var item = "";
+                var item = "<option value=-1>=请选择=</option>";
                 for (var i = 0; i < data.length; i++) {
                     item += ' <option value="' + data[i].ProjectID + '">' + data[i].ProjectName + '</option>';
                 }
@@ -163,11 +163,37 @@
                 $("#Eprojectname").empty().append(item);
             });
 
+            $("#departname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#edepartname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#projectname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#Eprojectname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
 
             $("#save").bind("click", function () {
                 var model = {};
                 model.DepartmentName = $("#departname").val();
                 model.ProjectID = $("#projectname").val();
+
+                if (model.ProjectID == "-1") {
+                    $("#projectname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.DepartmentName == "") {
+                    $("#departname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+
+
                 $.ajax({
                     url: "/Departments/Create",
                     type: 'POST',
@@ -197,6 +223,15 @@
                 model.DepartmentID = id;
                 model.ProjectID = $("#Eprojectname").val();
                 model.DepartmentName = $("#edepartname").val();
+                if (model.ProjectID == "-1") {
+                    $("#Eprojectname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.DepartmentName == "") {
+                    $("#edepartname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+
                 $.ajax({
                     url: "/Departments/Edit",
                     type: 'POST',
@@ -208,7 +243,7 @@
             });
         }
         function Delete(obj) {
-            if (confirm("确定要删除?")) {
+            if (confirm("提示:以下操作将会删除该部门下所有点位,是否继续?")) {
                 $.ajax({
                     url: "/Departments/Delete",
                     type: 'GET',

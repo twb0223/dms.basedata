@@ -37,6 +37,9 @@
                         <th>
                             项目名称
                         </th>
+                        <th>
+                            项目类型
+                        </th>
                         <th class="col-md-1 col-sm-1 col-lg-1">
                             操作
                         </th>
@@ -51,6 +54,9 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.ProjectName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProjectType.ProjectTypeName)
                             </td>
                             <td>
                                 <a title="编辑" href="javascript:Edit('@item.ProjectID');"><span class=" glyphicon glyphicon-edit"></span></a>
@@ -84,6 +90,16 @@
                                    placeholder="请输入项目名称">
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="projecttype" class="col-sm-2 control-label">项目类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="projecttype">
+                                <option value="">默认选择</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -112,6 +128,16 @@
                                    placeholder="请输入项目名称">
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="eprojecttype" class="col-sm-2 control-label">项目类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="eprojecttype">
+                                <option value="">默认选择</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -128,13 +154,39 @@
 @section Scripts {
     <script>
         $(function () {
+            $.getJSON("/Projects/GetProjectType", function (data) {
+                var item = "<option value=-1>=请选择=</option>";
+                for (var i = 0; i < data.length; i++) {
+                    item += ' <option value="' + data[i].ProjectTypeID + '">' + data[i].ProjectTypeName + '</option>';
+                }
+                $("#projecttype").empty().append(item);
+                $("#eprojecttype").empty().append(item);
+            });
+
+            $("#projecttype").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#eprojecttype").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
             $("#save").bind("click", function () {
+                var model = {};
+                model.ProjectTypeID = $("#projecttype").val();
+                model.ProjectName = $("#projectname").val();
+                if (model.ProjectName == "") {
+                    $("#projectname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.ProjectTypeID == "-1") {
+                    $("#projecttype").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
                 $.ajax({
                     url: "/Projects/Create",
-                    type: 'GET',
-                    dataType: 'json',
-                    data: { ProjectName: $("#projectname").val() },
-                    contentType: 'application/json; charset=utf-8',
+                    type: 'POST',
+                    data: { jsonstr: JSON.stringify(model) },
                     success: function (data) {
                         if (data == "OK") {
                             location.href = "/Projects/Index";
@@ -149,7 +201,8 @@
                 type: 'GET',
                 data: { id: id },
                 success: function (data) {
-                    $("#Eprojectname").val(data);
+                    $("#Eprojectname").val(data.ProjectName);
+                    $("#eprojecttype").val(data.ProjectTypeID);
                     $('#myEditModal').modal('show');
                 }
             });
@@ -158,6 +211,15 @@
                 var model = {};
                 model.ProjectID = id;
                 model.ProjectName = $("#Eprojectname").val();
+                model.ProjectTypeID = $("#eprojecttype").val();
+                if (model.ProjectName == "") {
+                    $("#Eprojectname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.ProjectTypeID == "-1") {
+                    $("#eprojecttype").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
                 $.ajax({
                     url: "/Projects/Edit",
                     type: 'POST',

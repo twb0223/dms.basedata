@@ -22,6 +22,8 @@ namespace BaseData.DataAccess
 
         public DbSet<Station> Stations { get; set; }
 
+        public DbSet<ProjectType> ProjectType { get; set; }
+
         public MyDataContext()
             : base(ConnectionString)
         {

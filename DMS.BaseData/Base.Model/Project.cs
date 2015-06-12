@@ -14,5 +14,9 @@ namespace Base.Model
         [Required]
         public string ProjectName { get; set; }
 
+        [Required]
+        public int ProjectTypeID { get; set; }
+
+        public virtual ProjectType ProjectType { get; set; }
     }
 }
