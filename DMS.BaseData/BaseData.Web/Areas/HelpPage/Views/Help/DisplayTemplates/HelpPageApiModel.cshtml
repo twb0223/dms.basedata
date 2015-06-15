@@ -11,12 +11,12 @@
 <div>
     <p>@description.Documentation</p>
 
-    <h2>Request Information</h2>
+    <h2>请求信息</h2>
 
-    <h3>URI Parameters</h3>
+    <h3>URI 参数</h3>
     @Html.DisplayFor(m => m.UriParameters, "Parameters")
 
-    <h3>Body Parameters</h3>
+    <h3>Body 参数</h3>
 
     <p>@Model.RequestDocumentation</p>
 
@@ -39,9 +39,9 @@
         @Html.DisplayFor(m => m.SampleRequests, "Samples")
     }
 
-    <h2>Response Information</h2>
+    <h2>返回信息</h2>
 
-    <h3>Resource Description</h3>
+    <h3>资源描述</h3>
 
     <p>@description.ResponseDescription.Documentation</p>
 
@@ -60,8 +60,8 @@
 
     @if (Model.SampleResponses.Count > 0)
     {
-        <h3>Response Formats</h3>
+        <h3>返回格式</h3>
         @Html.DisplayFor(m => m.SampleResponses, "Samples")
     }
-
+  
 </div>

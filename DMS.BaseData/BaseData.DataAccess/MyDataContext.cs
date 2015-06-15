@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using Base.Model;
+using BaseData.Model;
 
 namespace BaseData.DataAccess
 {
@@ -14,7 +14,7 @@ namespace BaseData.DataAccess
     {
         private static string ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["BaseDataCS"].ToString();
 
-        public DbSet<Equement> Equements { get; set; }
+        public DbSet<Equipment> Equements { get; set; }
 
         public DbSet<Project> Projects { get; set; }
 
@@ -22,7 +22,9 @@ namespace BaseData.DataAccess
 
         public DbSet<Station> Stations { get; set; }
 
-        public DbSet<ProjectType> ProjectType { get; set; }
+        public DbSet<ProjectType> ProjectTypes { get; set; }
+
+        public DbSet<EqumentStation> EqumentStations { get; set; }
 
         public MyDataContext()
             : base(ConnectionString)

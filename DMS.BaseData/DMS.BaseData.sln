@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base.Model", "Base.Model\Base.Model.csproj", "{70C54A8B-4A39-49F8-81B6-0CDC2093FA89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseData.Model", "Base.Model\BaseData.Model.csproj", "{70C54A8B-4A39-49F8-81B6-0CDC2093FA89}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseData.DataAccess", "BaseData.DataAccess\BaseData.DataAccess.csproj", "{C9D1158A-963B-43AF-9F6B-85CFE84FB18D}"
 EndProject

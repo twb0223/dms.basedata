@@ -1,11 +1,11 @@
 ﻿@using Webdiyer.WebControls.Mvc;
-@model Webdiyer.WebControls.Mvc.PagedList<Base.Model.Equement>
+@model Webdiyer.WebControls.Mvc.PagedList<BaseData.Model.Equipment>
 @{
     ViewBag.Title = "设备管理";
 }
 <div>
     <ol class="breadcrumb">
-        <li><a href="../Equements/Index">设备管理</a></li>
+        <li><a href="../Equipments/Index">设备管理</a></li>
         @*<li><a href="../Departments/Index">部门管理</a></li>
             <li><a href="../Departments/Index">点位管理</a></li>*@
     </ol>
@@ -19,16 +19,19 @@
                         @using (Ajax.BeginForm("Index", new RouteValueDictionary { { "id", "" } }, new AjaxOptions { UpdateTargetId = "equipment", HttpMethod = "Get", InsertionMode = InsertionMode.Replace }, new RouteValueDictionary { { "id", "searchForm" }, { "class", "bs-example bs-example-form" }, { "role", "form" } }))
                         {
                             <div class="row">
-                                <div class="col-lg-4 col-md-6">
+                                <div class="col-lg-5 col-md-7">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="key" id="key" placeholder="设备名称，MAC">
+                                               <input type="text" class="form-control" name="key" id="key" placeholder="设备名称，MAC">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default" type="submit">
                                                 查询
                                             </button>
+
                                         </span>
+
                                     </div>
                                 </div>
+      
                             </div>
                         }
                     </div>
@@ -161,6 +164,7 @@
                         <label for="edequno" class="col-sm-2 control-label">设备ID</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="edequno" disabled>
+                            <input type="hidden" id="estatus" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -250,6 +254,80 @@
     </div>
 </div>
 
+<div class="modal fade" id="SetModal" tabindex="-1" role="dialog" aria-labelledby="SetModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="SetModalLabel">配置点位</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+                    <div class="form-group">
+                        <label for="setequno" class="col-sm-2 control-label">设备编号</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="setequno" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="curStation" class="col-sm-2 control-label">当前点位</label>
+                        <div class="col-sm-10">
+
+                            @*<input type="text" class="form-control" id="curStation" disabled>*@
+                            @*<span id="curStation" class="pull-left"></span>*@
+
+                            <div class="alert alert-info" id="curStation">
+                                @*<button type="button" class="close" data-dismiss="alert"
+                                            aria-hidden="true">
+                                        &times;
+                                    </button>*@
+
+                            </div>
+                            <input type="hidden" id="esid" />
+                            <input type="hidden" id="oldstationid" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class=" form-horizontal">
+
+
+                    <div class="form-group">
+                        <label for="setProject" class="col-sm-2 control-label">所属项目</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="setProject"></select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="setDep" class="col-sm-2 control-label">所属部门</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="setDep"></select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="setStation" class="col-sm-2 control-label">所属点位</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="setStation"></select>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="savestation" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts
 {
@@ -294,12 +372,12 @@
                     return;
                 }
                 $.ajax({
-                    url: "/Equements/Create",
+                    url: "/Equipments/Create",
                     type: 'POST',
                     data: { jsonstr: JSON.stringify(model) },
                     success: function (data) {
                         if (data == "OK") {
-                            location.href = "/Equements/Index";
+                            location.href = "/Equipments/Index";
                         }
                     }
                 });
@@ -308,36 +386,93 @@
             $("#equname").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
             });
-
             $("#equmac").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
             });
             $("#edequname").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
             });
-
             $("#edequmac").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
             });
+            ///当点位配置弹出是触发
+            $('#SetModal').on('show.bs.modal', function () {
+                $.getJSON("/api/ProjectsAPI", function (data) {
+                    var item = "<option value=-1>=请选择=</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        item += ' <option value="' + data[i].ProjectID + '">' + data[i].ProjectName + '</option>';
+                    }
+                    $("#setProject").empty().append(item);
+                    $("#setDep").empty().append("<option value=-1>=请选择=</option>");
+                    $("#setStation").empty().append("<option value=-1>=请选择=</option>");
+                });
+            })
+            $("#setProject").bind("change", function () {
+                var pid = $(this).val();
+                $(this).parents(".form-group").attr("class", "form-group");
+                $.getJSON("/api/DepartmentsAPI", { ProjectID: pid }, function (data) {
+                    var item = "<option value=-1>=请选择=</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        item += ' <option value="' + data[i].DepartmentID + '">' + data[i].DepartmentName + '</option>';
+                    }
+                    $("#setDep").empty().append(item);
+                    $("#setStation").empty().append("<option value=-1>=请选择=</option>");
+                });
+            });
+            $("#setDep").bind("change", function () {
+                var did = $(this).val();
+                $(this).parents(".form-group").attr("class", "form-group");
+                $.getJSON("/api/StationsAPI", { DepartmentID: did }, function (data) {
+                    var item = "<option value=-1>=请选择=</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].Status == 0) {
+                            item += ' <option value="' + data[i].StationID + '">' + data[i].StationName + '</option>';
+                        }
+                    }
+                    $("#setStation").empty().append(item);
+                });
+            });
+
+            $("#savestation").bind("click", function () {
+                var model = {};
+                model.ID = $("#esid").val() == "" ? 0 : $("#esid").val();
+                model.EquipmentID = $("#setequno").val();
+                model.StationID = $("#setStation").val();
+                if (model.StationID == "-1") {
+                    $("#setStation").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (confirm("提示：以下操作将会重新分配点位，是否继续?")) {
+                    $.ajax({
+                        url: "/Equipments/SetStations",
+                        type: 'POST',
+                        data: { jsonstr: JSON.stringify(model), oldstationid: $("#oldstationid").val() },
+                        success: function (data) {
+                            location.href = "/Equipments/Index";
+                        }
+                    });
+                }
+            });
         });
         function Delete(id) {
-            if (confirm("提示:以下操作将会删除该设备,是否继续?")) {
+            if (confirm("提示:以下操作将会删除该设备,并移除点位关系,是否继续?")) {
                 $.ajax({
-                    url: "/Equements/Delete",
+                    url: "/Equipments/Delete",
                     type: 'GET',
                     data: { id: id },
                     success: function (data) {
-                        location.href = "/Equements/Index";
+                        location.href = "/Equipments/Index";
                     }
                 });
             }
         }
         function Edit(id) {
             $.ajax({
-                url: "/Equements/GetForEdit",
+                url: "/Equipments/GetForEdit",
                 type: 'GET',
                 data: { id: id },
                 success: function (data) {
+                    $("#estatus").val(data.Status);
                     $("#edequno").val(data.EquipmentID);
                     $("#edequname").val(data.EquipmentName);
                     $("#edequmac").val(data.EquipmentMac);
@@ -351,6 +486,7 @@
             });
             $("#esave").bind("click", function () {
                 var model = {};
+                model.Status = $("#estatus").val();
                 model.EquipmentID = $("#edequno").val();
                 model.EquipmentName = $("#edequname").val();
                 model.EquipmentMac = $("#edequmac").val();
@@ -366,15 +502,34 @@
                     $("#edequmac").parents(".form-group").attr("class", "form-group has-error");
                     return;
                 }
-
                 $.ajax({
-                    url: "/Equements/Edit",
+                    url: "/Equipments/Edit",
                     type: 'POST',
                     data: { jsonstr: JSON.stringify(model) },
                     success: function (data) {
-                        location.href = "/Equements/Index";
+                        location.href = "/Equipments/Index";
                     }
                 });
+            });
+        }
+        function SetStations(id) {
+            $.ajax({
+                url: "/Equipments/GetForSetStations",
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    $("#setequno").val(id);
+                    if (data != "none") {
+                        $("#esid").val(data.ID);
+                        $("#oldstationid").val(data.StationID);
+                        $("#curStation").text(data.ProjectName + "-" + data.DepartmentName + "-" + data.StationName);
+                    }
+                    else {
+                        $("#curStation").text("当前未配置点位");
+                    }
+                    $('#SetModal').modal('show');
+
+                }
             });
         }
     </script>

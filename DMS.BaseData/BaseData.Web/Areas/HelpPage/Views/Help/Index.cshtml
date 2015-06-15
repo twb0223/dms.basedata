@@ -6,7 +6,7 @@
 @model Collection<ApiDescription>
 
 @{
-    ViewBag.Title = "ASP.NET Web API Help Page";
+    ViewBag.Title = "DMS 基础数据API帮助";
 
     // Group APIs by controller
     ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
@@ -23,9 +23,9 @@
 <div id="body" class="help-page">
     <section class="featured">
         <div class="content-wrapper">
-            <h2>Introduction</h2>
+            <h2>介绍</h2>
             <p>
-                Provide a general description of your APIs here.
+                为其他平台提供基础数据查询接口
             </p>
         </div>
     </section>

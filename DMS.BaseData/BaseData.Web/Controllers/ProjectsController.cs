@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Base.Model;
+using BaseData.Model;
 using BaseData.DataAccess;
 using Newtonsoft.Json;
 
@@ -40,7 +40,7 @@ namespace BaseData.Web.Controllers
         public JsonResult GetProjectType()
         {
             var res = new JsonResult();
-            res.Data = db.ProjectType.ToList();
+            res.Data = db.ProjectTypes.ToList();
             res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return res;
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Base.Model;
+using BaseData.Model;
 using Webdiyer.WebControls.Mvc;
 using BaseData.DataAccess;
 using Webdiyer.WebControls;
@@ -46,6 +46,7 @@ namespace BaseData.Web.Controllers
             {
                 var model = JsonConvert.DeserializeObject<Station>(jsonstr);
                 model.StationID = "S" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                model.Status = 0;
                 db.Stations.Add(model);
                 await db.SaveChangesAsync();
                 res.Data = "OK";
@@ -105,7 +106,20 @@ namespace BaseData.Web.Controllers
             }
             else
             {
-                db.Stations.Remove(sat);
+                //todo:删除点位关系，重置点位状态
+                var EQSEntity = db.EqumentStations.Where(x => x.StationID == id).FirstOrDefault();
+                if (EQSEntity != null)
+                {
+                    var EqEntity = db.Equements.Where(x => x.EquipmentID == EQSEntity.EquipmentID).FirstOrDefault();
+                    if (EqEntity != null)
+                    {
+                        EqEntity.Status = 0;
+                        db.Entry(EqEntity).State = EntityState.Modified;
+                    }
+                    db.Entry(EQSEntity).State = EntityState.Deleted;
+                }
+
+                db.Entry(sat).State = EntityState.Deleted;
                 await db.SaveChangesAsync();
                 res.Data = "OK";
             }

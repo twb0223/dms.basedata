@@ -9,22 +9,34 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Base.Model;
+using BaseData.Model;
 using BaseData.DataAccess;
 
 namespace BaseData.Web.Controllers
 {
+    /// <summary>
+    /// 项目信息API
+    /// </summary>
     public class ProjectsAPIController : ApiController
     {
         private MyDataContext db = new MyDataContext();
 
         // GET: api/ProjectsAPI
+        /// <summary>
+        /// 获取项目集合
+        /// </summary>
+        /// <returns>返回项目集合</returns>
         public IQueryable<Project> GetProjects()
         {
             return db.Projects;
         }
 
         // GET: api/ProjectsAPI/5
+        /// <summary>
+        /// 获取部门对象
+        /// </summary>
+        /// <param name="id">部门ID</param>
+        /// <returns>返回部门对象</returns>
         [ResponseType(typeof(Project))]
         public async Task<IHttpActionResult> GetProject(int id)
         {

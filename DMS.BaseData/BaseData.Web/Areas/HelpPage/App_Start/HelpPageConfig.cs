@@ -58,6 +58,10 @@ namespace BaseData.Web.Areas.HelpPage
             config.SetSampleForMediaType(
                 new TextSample("Binary JSON content. See http://bsonspec.org for details."),
                 new MediaTypeHeaderValue("application/bson"));
+          
+            config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/Document.XML")));
+
+           // config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin/BaseData.Model.XML")));
 
             //// Uncomment the following to use "[0]=foo&[1]=bar" directly as the sample for all actions that support form URL encoded format
             //// and have IEnumerable<string> as the body parameter or return type.
