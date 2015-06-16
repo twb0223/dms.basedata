@@ -18,7 +18,7 @@ namespace BaseData.Model
         /// 点位名称
         /// </summary>
         [Required]
-        [MaxLength(50)]
+        [MaxLength(100)]
         public string StationName { get; set; }
 
         /// <summary>

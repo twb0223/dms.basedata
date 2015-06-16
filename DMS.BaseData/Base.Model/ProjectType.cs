@@ -23,6 +23,7 @@ namespace BaseData.Model
         /// 项目类型名称
         /// </summary>
         [Required]
+        [MaxLength(100)]
         public string ProjectTypeName { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace BaseData.Model
         /// <summary>
         /// 项目名称
         /// </summary>
-        [MaxLength(50)]
+        [MaxLength(100)]
         [Required]
         public string ProjectName { get; set; }
         /// <summary>

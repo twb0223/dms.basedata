@@ -17,13 +17,13 @@ namespace BaseData.Model
         /// <summary>
         /// 设备名称
         /// </summary>
-        [MaxLength(50)]
+        [MaxLength(100)]
         [Required]
         public string EquipmentName { get; set; }
         /// <summary>
         /// Mac地址
         /// </summary>
-        [MaxLength(20)]
+        [MaxLength(30)]
         [Required]
         public string EquipmentMac { get; set; }
         /// <summary>

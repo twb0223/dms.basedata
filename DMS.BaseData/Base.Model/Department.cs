@@ -19,7 +19,7 @@ namespace BaseData.Model
         /// <summary>
         /// 部门名称
         /// </summary>
-        [MaxLength(50)]
+        [MaxLength(100)]
         [Required]
         public string DepartmentName { get; set; }
 
