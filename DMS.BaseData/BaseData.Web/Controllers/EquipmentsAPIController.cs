@@ -26,7 +26,7 @@ namespace BaseData.Web.Controllers
         /// <returns>返回设备集合</returns>
         public IQueryable<Equipment> GetEquements()
         {
-            return db.Equements;
+            return db.Equipments;
         }
 
         // GET: api/EquipmentsAPI/5
@@ -38,7 +38,7 @@ namespace BaseData.Web.Controllers
         [ResponseType(typeof(Equipment))]
         public async Task<IHttpActionResult> GetEquipment(string id)
         {
-            Equipment equipment = await db.Equements.FindAsync(id);
+            Equipment equipment = await db.Equipments.FindAsync(id);
             if (equipment == null)
             {
                 return NotFound();
@@ -100,12 +100,14 @@ namespace BaseData.Web.Controllers
             entity.EquipmentID = "OVI" + DateTime.Now.ToString("yyyyMMddhhmmss");
             entity.EquipmentMac = para.EquipmentMac;
             entity.EquipmentName = entity.EquipmentID;
+            entity.OsTypeID = -1;
+            entity.EquipmentTypeID = -1;
             entity.Status = 0;
             entity.CreateTime = DateTime.Now;
             entity.CreateBy = "Client";
             entity.ClientChangeFlag = Guid.NewGuid().ToString();
 
-            db.Equements.Add(entity);
+            db.Equipments.Add(entity);
 
             try
             {
@@ -152,7 +154,7 @@ namespace BaseData.Web.Controllers
 
         private bool EquipmentExists(string id)
         {
-            return db.Equements.Count(e => e.EquipmentID == id) > 0;
+            return db.Equipments.Count(e => e.EquipmentID == id) > 0;
         }
     }
 }

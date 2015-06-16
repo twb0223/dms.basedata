@@ -38,14 +38,22 @@ namespace BaseData.Model
         public string EquipmentDisk { get; set; }
 
         /// <summary>
+        /// 设备IP
+        /// </summary>
+        [MaxLength(20)]
+        public string EquipmentIP { get; set; }
+
+        /// <summary>
         /// 设备类型
         /// </summary>
-        public int EqumentType { get; set; }
+        public int EquipmentTypeID { get; set; }
 
         /// <summary>
         /// 设备操作系统
         /// </summary>
-        public int OsType { get; set; }
+        public int OsTypeID { get; set; }
+
+       
 
         /// <summary>
         /// 设备状态：0：未分配；1：已分配

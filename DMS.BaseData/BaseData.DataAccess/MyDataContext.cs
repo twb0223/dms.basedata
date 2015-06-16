@@ -14,7 +14,7 @@ namespace BaseData.DataAccess
     {
         private static string ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["BaseDataCS"].ToString();
 
-        public DbSet<Equipment> Equements { get; set; }
+        public DbSet<Equipment> Equipments { get; set; }
 
         public DbSet<Project> Projects { get; set; }
 
@@ -24,7 +24,11 @@ namespace BaseData.DataAccess
 
         public DbSet<ProjectType> ProjectTypes { get; set; }
 
-        public DbSet<EqumentStation> EqumentStations { get; set; }
+        public DbSet<EquipmentStation> EquipmentStations { get; set; }
+
+
+        public DbSet<OsType> OsTypes { get; set; }
+        public DbSet<EquipmentType> EquipmentTypes { get; set; }
 
         public MyDataContext()
             : base(ConnectionString)

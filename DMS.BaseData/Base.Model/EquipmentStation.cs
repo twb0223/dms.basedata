@@ -11,7 +11,7 @@ namespace BaseData.Model
     /// <summary>
     /// 设备点位关系
     /// </summary>
-    public class EqumentStation
+    public class EquipmentStation
     {
         /// <summary>
         /// 设备点位关系ID

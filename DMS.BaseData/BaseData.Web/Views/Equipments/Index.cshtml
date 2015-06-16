@@ -5,9 +5,10 @@
 }
 <div>
     <ol class="breadcrumb">
+        <li><a href="../EquipmentStations/Index">设备点位列表</a></li>
         <li><a href="../Equipments/Index">设备管理</a></li>
-        @*<li><a href="../Departments/Index">部门管理</a></li>
-            <li><a href="../Departments/Index">点位管理</a></li>*@
+       
+        @*<li><a href="../Departments/Index">点位管理</a></li>*@
     </ol>
 </div>
 <div class="row">
@@ -21,7 +22,7 @@
                             <div class="row">
                                 <div class="col-lg-5 col-md-7">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="key" id="key" placeholder="设备名称，MAC">
+                                        <input type="text" class="form-control" name="key" id="key" placeholder="设备编号，名称，MAC">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default" type="submit">
                                                 查询
@@ -68,7 +69,7 @@
                         <label for="equname" class="col-sm-2 control-label">设备名称</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="equname"
-                                   placeholder="请输入设备名称">
+                                   placeholder="请输入设备名称" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -76,6 +77,14 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="equmac"
                                    placeholder="请输入设备MAC">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="equip" class="col-sm-2 control-label">设备IP</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="equip"
+                                   placeholder="请输入设备IP">
                         </div>
                     </div>
 
@@ -130,11 +139,11 @@
                         <div class="col-sm-10">
                             <select class="form-control" id="osType">
                                 <option value=-1>=请选择=</option>
-                                <option value=0>Windows</option>
-                                <option value=1>Android</option>
-                                <option value=2>Linux</option>
-                                <option value=3>IOS</option>
-                                <option value=4>其他</option>
+                                <option value=1>Windows</option>
+                                <option value=2>Android</option>
+                                <option value=3>Linux</option>
+                                <option value=4>IOS</option>
+                                <option value=5>其他</option>
                             </select>
                         </div>
                     </div>
@@ -157,7 +166,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myEditModalLabel">新建设备</h4>
+                <h4 class="modal-title" id="myEditModalLabel">修改设备</h4>
             </div>
             <div class="modal-body">
                 <div class=" form-horizontal">
@@ -180,6 +189,14 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="edequmac"
                                    placeholder="请输入设备MAC">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edequip" class="col-sm-2 control-label">设备IP</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edequip"
+                                   placeholder="请输入设备IP">
                         </div>
                     </div>
 
@@ -234,11 +251,11 @@
                         <div class="col-sm-10">
                             <select class="form-control" id="edosType">
                                 <option value=-1>=请选择=</option>
-                                <option value=0>Windows</option>
-                                <option value=1>Android</option>
-                                <option value=2>Linux</option>
-                                <option value=3>IOS</option>
-                                <option value=4>其他</option>
+                                <option value=1>Windows</option>
+                                <option value=2>Android</option>
+                                <option value=3>Linux</option>
+                                <option value=4>IOS</option>
+                                <option value=5>其他</option>
                             </select>
                         </div>
                     </div>
@@ -331,7 +348,6 @@
     </div>
 </div>
 
-
 @section Scripts
 {
     @{Html.RegisterMvcPagerScriptResource();}
@@ -362,10 +378,11 @@
                 model.EquipmentID = $("#equno").val();
                 model.EquipmentName = $("#equname").val();
                 model.EquipmentMac = $("#equmac").val();
-                model.EqumentType = $("#equType").val();
+                model.EquipmentIP = $("#equip").val();
+                model.EquipmentTypeID = $("#equType").val();
                 model.EquipmentCPU = $("#equcpu").val();
                 model.EquipmentDisk = $("#equStorageType").val();
-                model.OsType = $("#osType").val();
+                model.OsTypeID = $("#osType").val();
                 if (model.EquipmentName == "") {
                     $("#equname").parents(".form-group").attr("class", "form-group has-error");
                     return;
@@ -483,12 +500,13 @@
                     $("#edequno").val(data.EquipmentID);
                     $("#edequname").val(data.EquipmentName);
                     $("#edequmac").val(data.EquipmentMac);
-                    $("#edequType").val(data.EqumentType);
+                    $("#edequip").val(data.EquipmentIP);
+                    $("#edequType").val(data.EquipmentTypeID);
                     $("#edequcpu").val(data.EquipmentCPU);
-                    $("#edosType").val(data.OsType);
+                    $("#edosType").val(data.OsTypeID);
                     $("#edequStorageType").val(data.EquipmentDisk);
                     $('#myEditModal').modal('show');
-
+         
                 }
             });
             $("#esave").bind("click", function () {
@@ -497,10 +515,11 @@
                 model.EquipmentID = $("#edequno").val();
                 model.EquipmentName = $("#edequname").val();
                 model.EquipmentMac = $("#edequmac").val();
-                model.EqumentType = $("#edequType").val();
+                model.EquipmentIP = $("#edequip").val();
+                model.EquipmentTypeID = $("#edequType").val();
                 model.EquipmentCPU = $("#edequcpu").val();
                 model.EquipmentDisk = $("#edequStorageType").val();
-                model.OsType = $("#edosType").val();
+                model.OsTypeID = $("#edosType").val();
                 if (model.EquipmentName == "") {
                     $("#edequname").parents(".form-group").attr("class", "form-group has-error");
                     return;

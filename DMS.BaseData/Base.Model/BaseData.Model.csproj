@@ -43,7 +43,9 @@
   <ItemGroup>
     <Compile Include="Department.cs" />
     <Compile Include="Equipment.cs" />
-    <Compile Include="EqumentStation.cs" />
+    <Compile Include="EquipmentType.cs" />
+    <Compile Include="EquipmentStation.cs" />
+    <Compile Include="OsType.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="ProjectType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -26,7 +26,7 @@ namespace BaseData.Web.Controllers
 
         private ActionResult ajaxSearchGetResult(string key, string isUse, int id = 1)
         {
-            var qry = db.Equements.AsQueryable();
+            var qry = db.Equipments.AsQueryable();
             if (!String.IsNullOrWhiteSpace(key))
                 qry = qry.Where(x => x.EquipmentMac.Contains(key) || x.EquipmentName.Contains(key) || x.EquipmentID.Contains(key));
             var model = qry.OrderByDescending(a => a.CreateTime).ToPagedList(id, 10);
@@ -39,7 +39,7 @@ namespace BaseData.Web.Controllers
         {
             var res = new JsonResult();
 
-            var entity = db.EqumentStations.Include(x => x.Station).Include(x => x.Station.Department).Include(x => x.Station.Department.Project).Where(x => x.EquipmentID == id).FirstOrDefault();
+            var entity = db.EquipmentStations.Include(x => x.Station).Include(x => x.Station.Department).Include(x => x.Station.Department.Project).Where(x => x.EquipmentID == id).FirstOrDefault();
             if (entity != null)
             {
                 var vm = new
@@ -47,6 +47,7 @@ namespace BaseData.Web.Controllers
                     ID = entity.ID,
                     StationID = entity.StationID,
                     EquipmentID = entity.EquipmentID,
+                    //EquipmentName = entity.Equipment.EquipmentName,
                     StationName = entity.Station.StationName,
                     DepartmentName = entity.Station.Department.DepartmentName,
                     ProjectName = entity.Station.Department.Project.ProjectName
@@ -65,7 +66,7 @@ namespace BaseData.Web.Controllers
         public async Task<ActionResult> SetStations(string jsonstr, string oldstationid)
         {
             var res = new JsonResult();
-            var model = JsonConvert.DeserializeObject<EqumentStation>(jsonstr);
+            var model = JsonConvert.DeserializeObject<EquipmentStation>(jsonstr);
             if (model.ID != 0)
             {
                 db.Entry(model).State = EntityState.Modified;
@@ -75,7 +76,7 @@ namespace BaseData.Web.Controllers
                 db.Entry(model).State = EntityState.Added;
             }
             //todo：修改设备 状态，点位状态
-            var eqentity = db.Equements.Find(model.EquipmentID);
+            var eqentity = db.Equipments.Find(model.EquipmentID);
             eqentity.Status = 1;
             db.Entry(eqentity).State = EntityState.Modified;
 
@@ -109,7 +110,7 @@ namespace BaseData.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Equipment equement = await db.Equements.FindAsync(id);
+            Equipment equement = await db.Equipments.FindAsync(id);
             if (equement == null)
             {
                 return HttpNotFound();
@@ -128,7 +129,7 @@ namespace BaseData.Web.Controllers
                 model.CreateTime = DateTime.Now;
                 model.CreateBy = "Client";
                 model.ClientChangeFlag = Guid.NewGuid().ToString();
-                db.Equements.Add(model);
+                db.Equipments.Add(model);
                 await db.SaveChangesAsync();
                 res.Data = "OK";
             }
@@ -141,7 +142,7 @@ namespace BaseData.Web.Controllers
         public JsonResult GetForEdit(string id)
         {
             var res = new JsonResult();
-            Equipment model = db.Equements.FirstOrDefault(x => x.EquipmentID == id);
+            Equipment model = db.Equipments.FirstOrDefault(x => x.EquipmentID == id);
             res.Data = model;
             res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return res;
@@ -173,7 +174,7 @@ namespace BaseData.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Equipment model = await db.Equements.FindAsync(id);
+            Equipment model = await db.Equipments.FindAsync(id);
             var res = new JsonResult();
             if (model == null)
             {
@@ -183,7 +184,7 @@ namespace BaseData.Web.Controllers
             {
 
                 //todo:删除点位关系，重置点位状态
-                var EQEntity = db.EqumentStations.Where(x => x.EquipmentID == id).FirstOrDefault();
+                var EQEntity = db.EquipmentStations.Where(x => x.EquipmentID == id).FirstOrDefault();
                 if (EQEntity != null)
                 {
                     var StaEntity = db.Stations.Where(x => x.StationID == EQEntity.StationID).FirstOrDefault();

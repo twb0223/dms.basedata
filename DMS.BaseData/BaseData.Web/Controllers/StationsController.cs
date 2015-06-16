@@ -107,10 +107,10 @@ namespace BaseData.Web.Controllers
             else
             {
                 //todo:删除点位关系，重置点位状态
-                var EQSEntity = db.EqumentStations.Where(x => x.StationID == id).FirstOrDefault();
+                var EQSEntity = db.EquipmentStations.Where(x => x.StationID == id).FirstOrDefault();
                 if (EQSEntity != null)
                 {
-                    var EqEntity = db.Equements.Where(x => x.EquipmentID == EQSEntity.EquipmentID).FirstOrDefault();
+                    var EqEntity = db.Equipments.Where(x => x.EquipmentID == EQSEntity.EquipmentID).FirstOrDefault();
                     if (EqEntity != null)
                     {
                         EqEntity.Status = 0;
