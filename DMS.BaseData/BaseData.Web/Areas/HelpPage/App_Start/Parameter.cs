@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Http;
 
-namespace BaseData.Web.Areas.HelpPage.App_Start
+namespace BaseData.Web.Areas.HelpPage
 {
     public class Parameter
     {

@@ -11,6 +11,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using BaseData.DataAccess;
 using BaseData.Model;
+using BaseData.Web.Areas.HelpPage.Models;
 
 namespace BaseData.Web.Controllers
 {
@@ -88,14 +89,23 @@ namespace BaseData.Web.Controllers
         /// <param name="equipment">设备对象</param>
         /// <returns>结果OK，Error</returns>
         [ResponseType(typeof(Equipment))]
-        public async Task<IHttpActionResult> PostEquipment(Equipment equipment)
+        public async Task<IHttpActionResult> PostEquipment(EqumentParameter para)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Equements.Add(equipment);
+            var entity = new Equipment();
+            entity.EquipmentID = "OVI" + DateTime.Now.ToString("yyyyMMddhhmmss");
+            entity.EquipmentMac = para.EquipmentMac;
+            entity.EquipmentName = entity.EquipmentID;
+            entity.Status = 0;
+            entity.CreateTime = DateTime.Now;
+            entity.CreateBy = "Client";
+            entity.ClientChangeFlag = Guid.NewGuid().ToString();
+
+            db.Equements.Add(entity);
 
             try
             {
@@ -103,7 +113,7 @@ namespace BaseData.Web.Controllers
             }
             catch (DbUpdateException)
             {
-                if (EquipmentExists(equipment.EquipmentID))
+                if (EquipmentExists(entity.EquipmentID))
                 {
                     return Conflict();
                 }
@@ -112,9 +122,7 @@ namespace BaseData.Web.Controllers
                     throw;
                 }
             }
-            return StatusCode(HttpStatusCode.NoContent);
-           // return Ok(equipment);
-            //return CreatedAtRoute("DefaultApi", new { id = equipment.EquipmentID }, equipment);
+            return CreatedAtRoute("DefaultApi", new { id = entity.EquipmentID }, entity);
         }
 
         //// DELETE: api/EquipmentsAPI/5

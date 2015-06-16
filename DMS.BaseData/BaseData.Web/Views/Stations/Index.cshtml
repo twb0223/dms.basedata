@@ -91,6 +91,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <div class="alert alert-danger" style="display:none" id="errmsg">输出数据不合法，请检查重新输入！</div>
                 <button id="save" type="button" class="btn btn-default btn-sm">
                     <span class="glyphicon glyphicon-ok"></span> 提交
                 </button>
@@ -145,6 +146,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <div class="alert alert-danger" style="display:none" id="ederrmsg">输出数据不合法，请检查重新输入！</div>
                 <button id="esave" type="button" class="btn btn-default btn-sm">
                     <span class="glyphicon glyphicon-ok"></span> 提交
                 </button>
@@ -215,6 +217,10 @@
                         if (data == "OK") {
                             location.href = "/Stations/Index";
                         }
+                    }, error: function (error) {
+                        if (error.status == 500) {
+                            $("#errmsg").css("display", "block");
+                        }
                     }
                 });
             });
@@ -262,6 +268,11 @@
                     data: { jsonstr: JSON.stringify(model) },
                     success: function (data) {
                         location.href = "/Stations/Index";
+                    },
+                    error: function (error) {
+                        if (error.status == 500) {
+                            $("#ederrmsg").css("display", "block");
+                        }
                     }
                 });
             });

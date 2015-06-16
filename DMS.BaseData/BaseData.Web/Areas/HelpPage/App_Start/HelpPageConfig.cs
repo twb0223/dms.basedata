@@ -61,6 +61,7 @@ namespace BaseData.Web.Areas.HelpPage
           
             config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/Document.XML")));
 
+            new Parameter().Reg(config);
            // config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin/BaseData.Model.XML")));
 
             //// Uncomment the following to use "[0]=foo&[1]=bar" directly as the sample for all actions that support form URL encoded format
