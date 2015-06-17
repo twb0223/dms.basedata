@@ -38,9 +38,9 @@ namespace BaseData.Web.Controllers
         /// <returns>返回该部门下所有点位</returns>
         public IQueryable<Station> GetStationsByDepmentID(int DepartmentID)
         {
-            return db.Stations.Include(x => x.Department).Include(x => x.Department.Project).Where(x => x.DepartmentID == DepartmentID);
+            return db.Stations.Where(x => x.DepartmentID == DepartmentID);
         }
-        
+
         // GET: api/StationsAPI/5
         /// <summary>
         /// 通过点位ID获取点位
@@ -53,10 +53,32 @@ namespace BaseData.Web.Controllers
             Station station = await db.Stations.FindAsync(id);
             if (station == null)
             {
-                return NotFound();
+                var vm = new
+                {
+                    Result = "None"
+                };
+                return Json(vm);
             }
-
             return Ok(station);
+        }
+        /// <summary>
+        /// 获取设备点位关系明细
+        /// </summary>
+        /// <param name="EquipmentID">设备ID</param>
+        /// <returns></returns>
+        [ResponseType(typeof(EquipmentStation))]
+        public async Task<IHttpActionResult> GetEquipmentStation(string EquipmentID)
+        {
+            EquipmentStation es = await db.EquipmentStations.Include(x => x.Equipment).Include(x => x.Station).Where(x => x.EquipmentID == EquipmentID).FirstOrDefaultAsync();
+            if (es == null)
+            {
+                var vm = new
+                {
+                    Result = "None"
+                };
+                return Json(vm);
+            }
+            return Ok(es);
         }
 
         //// PUT: api/StationsAPI/5

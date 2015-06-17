@@ -29,7 +29,7 @@ namespace BaseData.Web.Controllers
         /// <returns>返回部门集合</returns>
         public IQueryable<Department> GetDepartments()
         {
-            return db.Departments;
+            return db.Departments.Include(x=>x.Project);
         }
         // GET: api/DepartmentsAPI?ProjectID={ProjectID}
         /// <summary>
@@ -53,7 +53,11 @@ namespace BaseData.Web.Controllers
             Department department = await db.Departments.FindAsync(id);
             if (department == null)
             {
-                return NotFound();
+                var vm = new
+                {
+                    Result = "None"
+                };
+                return Json(vm);
             }
             return Ok(department);
         }

@@ -30,6 +30,14 @@ namespace BaseData.DataAccess
         public DbSet<OsType> OsTypes { get; set; }
         public DbSet<EquipmentType> EquipmentTypes { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Role> Roles { get; set; }
+
+        public DbSet<RoleAuthority> RoleAuthoritys { get; set; }
+
+        public DbSet<AuthorityMenu> AuthorityMenus { get; set; }
+
         public MyDataContext()
             : base(ConnectionString)
         {

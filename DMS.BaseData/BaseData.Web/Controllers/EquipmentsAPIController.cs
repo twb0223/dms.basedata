@@ -15,6 +15,9 @@ using BaseData.Web.Areas.HelpPage.Models;
 
 namespace BaseData.Web.Controllers
 {
+    /// <summary>
+    /// 设备信息API
+    /// </summary>
     public class EquipmentsAPIController : ApiController
     {
         private MyDataContext db = new MyDataContext();
@@ -41,7 +44,11 @@ namespace BaseData.Web.Controllers
             Equipment equipment = await db.Equipments.FindAsync(id);
             if (equipment == null)
             {
-                return NotFound();
+                var vm = new
+                {
+                    Result = "None"
+                };
+                return Json(vm);
             }
 
             return Ok(equipment);

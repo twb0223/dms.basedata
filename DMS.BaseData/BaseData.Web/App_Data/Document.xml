@@ -777,6 +777,11 @@
       <param name="id">部门ID</param>
       <returns>返回部门对象</returns>
     </member>
+    <member name="T:BaseData.Web.Controllers.EquipmentsAPIController">
+      <summary>
+        设备信息API
+      </summary>
+    </member>
     <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.GetEquements">
       <summary>
         获取设备列表
@@ -839,6 +844,13 @@
       </summary>
       <param name="id">点位ID</param>
       <returns>点位实体</returns>
+    </member>
+    <member name="M:BaseData.Web.Controllers.StationsAPIController.GetEquipmentStation(System.String)">
+      <summary>
+        获取设备点位关系明细
+      </summary>
+      <param name="EquipmentID">设备ID</param>
+      <returns></returns>
     </member>
     <member name="T:BaseData.Web.Areas.HelpPage.Models.EqumentParameter">
       <summary>

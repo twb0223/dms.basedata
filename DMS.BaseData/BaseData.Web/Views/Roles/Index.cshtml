@@ -1,0 +1,266 @@
+﻿@model IEnumerable<BaseData.Model.Role>
+@{
+    ViewBag.Title = "角色管理";
+    var idx = 0;
+}
+
+<div>
+    <ol class="breadcrumb">
+        <li><a href="../Roles/Index">角色管理</a></li>
+        <li><a href="../Users/Index">用户管理</a></li>
+        <li><a href="../RoleAuthoritys/Index">角色权限管理</a></li>
+    </ol>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <h2 class="panel-title">角色管理</h2>
+                        </td>
+                        <td class="pull-right">
+                            <a href="#" data-toggle="modal" data-backdrop="static" data-target="#myModal" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> 新建</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>
+                            序号
+                        </th>
+                        <th>
+                            角色名称
+                        </th>
+                        <th>
+                            所属项目
+                        </th>
+                        <th>
+                            操作
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        idx++;
+                        <tr>
+                            <td>
+                                @idx
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.RoleName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Project.ProjectName)
+                            </td>
+                            <td>
+                                <a title="配置权限" href="javascript:SetAuthority('@item.RoleID');"><span class="glyphicon glyphicon-cog"></span></a>
+                                &nbsp;&nbsp;
+                                <a title="编辑" href="javascript:Edit('@item.RoleID');"><span class=" glyphicon glyphicon-edit"></span></a>
+                                &nbsp;&nbsp;
+                                <a title="删除" href="javascript:Delete('@item.RoleID')"><span class="glyphicon glyphicon-trash"></span></a>
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">角色新建</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+
+                    <div class="form-group">
+                        <label for="rolename" class="col-sm-2 control-label">角色名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="rolename"
+                                   placeholder="请输入角色名称">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project" class="col-sm-2 control-label">所属项目</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="project">
+                                <option value="">默认选择</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="alert alert-danger" style="display:none" id="errmsg">输出数据不合法，请检查重新输入！</div>
+                <button id="save" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myEditModalLable" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myEditModalLable">角色修改</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+
+                    <div class="form-group">
+                        <label for="erolename" class="col-sm-2 control-label">角色名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="erolename"
+                                   placeholder="请输入角色名称">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eproject" class="col-sm-2 control-label">所属项目</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="eproject">
+                                <option value="">默认选择</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="alert alert-danger" style="display:none" id="ederrmsg">输出数据不合法，请检查重新输入！</div>
+                <button id="esave" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            $.getJSON("/api/ProjectsAPI", function (data) {
+                var item = "<option value=-1>=请选择=</option>";
+                for (var i = 0; i < data.length; i++) {
+                    item += ' <option value="' + data[i].ProjectID + '">' + data[i].ProjectName + '</option>';
+                }
+                $("#project").empty().append(item);
+                $("#eproject").empty().append(item);
+            });
+            $("#rolename").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+            $("#erolename").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#project").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#eproject").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+
+            $("#save").bind("click", function () {
+                var model = {};
+                model.ProjectID = $("#project").val();
+                model.RoleName = $("#rolename").val();
+                if (model.ProjectID == "-1") {
+                    $("#project").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.RoleName == "") {
+                    $("#rolename").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                $.ajax({
+                    url: "/Roles/Create",
+                    type: 'POST',
+                    data: { jsonstr: JSON.stringify(model) },
+                    success: function (data) {
+                        if (data == "OK") {
+                            location.href = "/Roles/Index";
+                        }
+                    },
+                    error: function (error) {
+                        if (error.status==500) {
+                            $("#errmsg").css("display", "block");
+                        }
+                    }
+                });
+            });
+        });
+        function Edit(id) {
+            $.ajax({
+                url: "/Roles/Edit",
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    $("#eproject").val(data.ProjectID);
+                    $("#erolename").val(data.RoleName);
+                    $('#myEditModal').modal('show');
+                }
+            });
+
+            $("#esave").bind("click", function () {
+                var model = {};
+                model.RoleID = id;
+                model.ProjectID = $("#eproject").val();
+                model.RoleName = $("#erolename").val();
+                if (model.ProjectID == "-1") {
+                    $("#eproject").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.RoleName == "") {
+                    $("#erolename").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                $.ajax({
+                    url: "/Roles/Edit",
+                    type: 'POST',
+                    data: { jsonstr: JSON.stringify(model) },
+                    success: function (data) {
+                        location.href = "/Roles/Index";
+                    },
+                    error: function (error) {
+                        if (error.status == 500) {
+                            $("#ederrmsg").css("display", "block");
+                        }
+                    }
+                });
+            });
+        }
+        function Delete(obj) {
+            if (confirm("确定要删除?")) {
+                $.ajax({
+                    url: "/Roles/Delete",
+                    type: 'GET',
+                    data: { id: obj },
+                    success: function (data) {
+                        location.href = "/Roles/Index";
+                    }
+                });
+            }
+        }
+    </script>
+}

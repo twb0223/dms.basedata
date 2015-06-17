@@ -43,7 +43,11 @@ namespace BaseData.Web.Controllers
             Project project = await db.Projects.FindAsync(id);
             if (project == null)
             {
-                return NotFound();
+                var vm = new
+                {
+                    Result = "None"
+                };
+                return Json(vm);
             }
 
             return Ok(project);
