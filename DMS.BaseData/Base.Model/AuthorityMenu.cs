@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace BaseData.Model
     public class AuthorityMenu
     {
         [Key]
-        [Required]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public string MenuCode { get; set; }
 
         [Required]

@@ -12,6 +12,7 @@ using System.Web.Http.Description;
 using BaseData.DataAccess;
 using BaseData.Model;
 using BaseData.Web.ViewModels;
+using Newtonsoft.Json;
 
 namespace BaseData.Web.Controllers
 {
@@ -49,11 +50,11 @@ namespace BaseData.Web.Controllers
         }
 
         /// <summary>
-        /// 获取
+        /// 获取项目菜单
         /// </summary>
         /// <param name="ProjectID">项目ID</param>
         /// <param name="flag">是否分组</param>
-        /// <returns></returns>
+        /// <returns>返回菜单JSON</returns>
         [ResponseType(typeof(RoleAuthorityMenus))]
         public async Task<IHttpActionResult> GetAuthorityMenuByProjectID(int ProjectID, bool flag)
         {
@@ -78,6 +79,7 @@ namespace BaseData.Web.Controllers
                         c.ChildMenuCode = cm.MenuCode;
                         c.ChildMenuName = cm.MenuName;
                         c.URL = cm.URL;
+                        c.Enable = false;
                         rcmlist.Add(c);
                     }
                 }
@@ -89,6 +91,58 @@ namespace BaseData.Web.Controllers
             ram.ProjectID = ProjectID;
             return Json(ram);
         }
+
+        /// <summary>
+        /// 获取角色对应菜单
+        /// </summary>
+        /// <param name="RoleID">角色ID</param>
+        /// <param name="ProjectID">项目ID</param>
+        /// <returns>返回菜单JSON</returns>
+        [ResponseType(typeof(RoleAuthorityMenus))]
+        public async Task<IHttpActionResult> GetAuthorityMenuByRoleID(int RoleID, int ProjectID)
+        {
+            var raety = await db.RoleAuthoritys.Where(x => x.RoleID == RoleID).FirstOrDefaultAsync();
+            if (raety != null)
+            {
+                return Json(JsonConvert.DeserializeObject<RoleAuthorityMenus>(raety.MenuJson));
+            }
+            else
+            {
+                var amList = await db.AuthorityMenus.Include(x => x.Project).Where(x => x.ProjectID == ProjectID).ToListAsync();
+                RoleAuthorityMenus ram = new RoleAuthorityMenus();
+                List<ParentMenu> rpmlist = new List<ParentMenu>();
+                var pmlist = amList.Where(x => x.ParentMenuCode == "");//父级菜单列表
+                var cmlist = amList.Where(x => x.ParentMenuCode != "");//子级菜单
+
+                foreach (var pm in pmlist)
+                {
+                    ParentMenu p = new ParentMenu();
+                    p.MenuCode = pm.MenuCode;
+                    p.MenuName = pm.MenuName;
+                    p.URL = pm.URL;
+                    List<ChildMenu> rcmlist = new List<ChildMenu>();
+                    foreach (var cm in cmlist)
+                    {
+                        if (cm.ParentMenuCode == pm.MenuCode)
+                        {
+                            ChildMenu c = new ChildMenu();
+                            c.ChildMenuCode = cm.MenuCode;
+                            c.ChildMenuName = cm.MenuName;
+                            c.URL = cm.URL;
+                            c.Enable = false;
+                            rcmlist.Add(c);
+                        }
+                    }
+
+                    p.ChildMenus = rcmlist;
+                    rpmlist.Add(p);
+                }
+                ram.Menus = rpmlist;
+                ram.ProjectID = ProjectID;
+                return Json(ram);
+            }
+        }
+
 
         //// PUT: api/AuthorityMenusAPI/5
         //[ResponseType(typeof(void))]

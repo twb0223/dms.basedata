@@ -20,7 +20,7 @@ namespace BaseData.Web.Controllers
         // GET: Roles
         public async Task<ActionResult> Index()
         {
-            return View(await db.Roles.Include(x=>x.Project).ToListAsync());
+            return View(await db.Roles.Include(x => x.Project).ToListAsync());
         }
 
         // GET: Roles/Details/5
@@ -44,7 +44,7 @@ namespace BaseData.Web.Controllers
             var res = new JsonResult();
             if (ModelState.IsValid)
             {
-                //db.Entry(JsonConvert.DeserializeObject<Department>(jsonstr)).State = EntityState.Added;
+
                 db.Roles.Add(JsonConvert.DeserializeObject<Role>(jsonstr));
                 await db.SaveChangesAsync();
                 res.Data = "OK";
@@ -55,6 +55,37 @@ namespace BaseData.Web.Controllers
             }
             return res;
         }
+
+        [HttpPost]
+        public async Task<ActionResult> SetAuthority(int roleid, string jsonstr)
+        {
+            var res = new JsonResult();
+            if (ModelState.IsValid)
+            {
+                var entity = db.RoleAuthoritys.Where(x => x.RoleID == roleid).FirstOrDefault();//判断是否存在该角色菜单
+                if (entity != null)
+                {
+                    entity.MenuJson = jsonstr;
+                    db.Entry(entity).State = EntityState.Modified;
+                }
+                else
+                {
+                    RoleAuthority vm = new RoleAuthority();
+                    vm.RoleID = roleid;
+                    vm.MenuJson = jsonstr;
+                    db.RoleAuthoritys.Add(vm);
+                }
+                await db.SaveChangesAsync();
+                res.Data = "OK";
+            }
+            else
+            {
+                res.Data = "ERROR";
+            }
+            return res;
+        }
+
+
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)

@@ -28,5 +28,7 @@ namespace BaseData.Web.ViewModels
         public string ChildMenuName { get; set; }
 
         public string URL { get; set; }
+
+        public bool Enable { get; set; }
     }
 }

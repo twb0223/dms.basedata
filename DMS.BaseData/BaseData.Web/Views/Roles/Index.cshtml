@@ -162,8 +162,8 @@
                 <h4 class="modal-title" id="SetModalLabel">配置权限</h4>
             </div>
             <div class="modal-body">
-                <input type="hidden" name="pidhid" value="" />
-                <input type="hidden" name="ridhid" value="" />
+                <input type="hidden" id="pidhid" value="" />
+                <input type="hidden" id="ridhid" value="" />
                 <div class="panel-group" id="accordion">
 
                     @*<div class="panel panel-default">
@@ -220,6 +220,7 @@
 
 @section Scripts {
     <script>
+        var authJson = null;
         $(function () {
             $.getJSON("/api/ProjectsAPI", function (data) {
                 var item = "<option value=-1>=请选择=</option>";
@@ -273,20 +274,18 @@
                 });
             });
 
-            //$("#saveAuthority").bind("click", function () {
-            //    var roleid = $("#ridhid").val();
-            //    var proid = $("#pidhid").val();
-            //    var vm = {};
-            //    vm.ProjectID = proid;
-            //    vm.RoleID = roleid;
+            $("#saveAuthority").bind("click", function () {
+                var rid = $("#ridhid").val();
+                $.ajax({
+                    url: "/Roles/SetAuthority",
+                    type: 'POST',
+                    data: { roleid: rid, jsonstr: JSON.stringify(authJson) },
+                    success: function (data) {
+                        location.href = "/Roles/Index";
+                    }
+                });
 
-            //    $("input[type=checkbox][flag=c]").each(function () {
-            //        if (this.checked) {
-
-            //        }
-            //    });
-
-            //});
+            });
         });
         function Edit(id) {
             $.ajax({
@@ -341,32 +340,38 @@
             }
         }
 
-        var authJson = null;
-        function SetAuth(i, j) {
-            if (authJson!=null) {
+
+        function SetAuth(obj, i, j) {
+            if (authJson != null) {
                 //todo:设置是否可用
+                if (obj.checked) {
+                    authJson.Menus[i].ChildMenus[j].Enable = true;
+                } else {
+                    authJson.Menus[i].ChildMenus[j].Enable = false;
+                }
             }
-            alert(authJson.Menus[i].ChildMenus[j].ChildMenuCode);
-            //alert(data.Menus[1].ChildMenus[1].ChildMenuCode);
         }
 
         function SetAuthority(rid, pid) {
             $("#ridhid").val(rid);
             $("#pidhid").val(pid);
-            $.getJSON("/api/AuthorityMenusAPI", { ProjectID: pid, flag: true }, function (data) {
+            $.getJSON("/api/AuthorityMenusAPI", { RoleID: rid, ProjectID: pid }, function (data) {
                 authJson = data;
                 var strht = "";
                 for (var i = 0; i < data.Menus.length; i++) {
-                    strht += '<div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><input type="checkbox" flag="p" name="" value="' + data.Menus[i].MenuCode + '" />';
+                    strht += '<div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">';
                     strht += '<a data-toggle="collapse" data-parent="#accordion" href="#collapse' + i + '">';
                     strht += data.Menus[i].MenuName;
                     strht += '</a> </h4></div>';
                     strht += '<div id="collapse' + i + '" class="panel-collapse collapse in"> <div class="panel-body">';
-                    strht += "<ol>";
+                    strht += "<ol style='list-style-type:none'>";
                     for (var j = 0; j < data.Menus[i].ChildMenus.length; j++) {
-                        //strht += '<li><input type="checkbox" flag="c"  onclick="SetAuth(' + data + ',' + i + ',' + j + ')" pcode="' + data.Menus[i].MenuCode + '"  value="' + data.Menus[i].ChildMenus[j].ChildMenuCode + '" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
-
-                        strht += '<li><input type="checkbox" flag="c" onclick="SetAuth('+i+','+j+');" pcode="' + data.Menus[i].MenuCode + '"  value="' + data.Menus[i].ChildMenus[j].ChildMenuCode + '" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
+                        if (data.Menus[i].ChildMenus[j].Enable) {
+                            strht += '<li><input type="checkbox" checked=true onclick="SetAuth(this,' + i + ',' + j + ');" pcode="' + data.Menus[i].MenuCode + '"  value="' + data.Menus[i].ChildMenus[j].ChildMenuCode + '" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
+                        }
+                        else {
+                            strht += '<li><input type="checkbox"  onclick="SetAuth(this,' + i + ',' + j + ');" pcode="' + data.Menus[i].MenuCode + '"  value="' + data.Menus[i].ChildMenus[j].ChildMenuCode + '" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
+                        }
                     }
                     strht += "</ol>";
                     strht += '</div></div></div>';
