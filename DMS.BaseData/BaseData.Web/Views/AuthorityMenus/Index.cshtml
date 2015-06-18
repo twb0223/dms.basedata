@@ -1,0 +1,387 @@
+﻿@model IEnumerable<BaseData.Model.AuthorityMenu>
+
+@{
+    ViewBag.Title = "权限菜单管理";
+    var idx = 0;
+}
+
+<div>
+    <ol class="breadcrumb">
+        <li><a href="../Roles/Index">角色管理</a></li>
+        <li><a href="../Users/Index">用户管理</a></li>
+        <li><a href="../AuthorityMenus/Index">权限菜单管理</a></li>
+    </ol>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <h2 class="panel-title">角色管理</h2>
+                        </td>
+                        <td class="pull-right">
+                            <a href="#" data-toggle="modal" data-backdrop="static" data-target="#myModal" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> 新建</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>
+                            菜单编号
+                        </th>
+                        <th>
+                            菜单名称
+                        </th>
+                        <th>
+                            父级菜单
+                        </th>
+                        <th>
+                            菜单URL
+                        </th>
+                        <th>
+                            所属项目
+                        </th>
+                        <th>
+                            操作
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MenuCode)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MenuName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ParentMenuCode)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.URL)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Project.ProjectName)
+                            </td>
+                            <td>
+                                @*<a title="配置权限" href="javascript:SetAuthority('@item.MenuCode');"><span class="glyphicon glyphicon-cog"></span></a>
+                                    &nbsp;&nbsp;*@
+                                <a title="编辑" href="javascript:Edit('@item.MenuCode');"><span class=" glyphicon glyphicon-edit"></span></a>
+                                &nbsp;&nbsp;
+                                <a title="删除" href="javascript:Delete('@item.MenuCode')"><span class="glyphicon glyphicon-trash"></span></a>
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">权限菜单新建</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+
+                    <div class="form-group">
+                        <label for="menuno" class="col-sm-2 control-label">菜单编号</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="menuno"
+                                   placeholder="请输入菜单编号：例如：1000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="menuname" class="col-sm-2 control-label">菜单名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="menuname"
+                                   placeholder="请输入菜单名称">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project" class="col-sm-2 control-label">所属项目</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="project">
+                                <option value="">默认选择</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="parentcode" class="col-sm-2 control-label">父级菜单</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="parentcode">
+                                <option value="">默认选择</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="menuurl" class="col-sm-2 control-label">URL</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="menuurl"
+                                   placeholder="请输入菜单页面连接">
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="alert alert-danger" style="display:none" id="errmsg">输出数据不合法，请检查重新输入！</div>
+                <button id="save" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myEditModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myEditModalLabel">权限菜单新建</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" form-horizontal">
+
+                    <div class="form-group">
+                        <label for="edmenuno" class="col-sm-2 control-label">菜单编号</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edmenuno"
+                                   placeholder="请输入菜单编号：例如：1000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edmenuname" class="col-sm-2 control-label">菜单名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edmenuname"
+                                   placeholder="请输入菜单名称">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edproject" class="col-sm-2 control-label">所属项目</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="edproject">
+                                <option value="">默认选择</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="edparentcode" class="col-sm-2 control-label">父级菜单</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="edparentcode">
+                                <option value="">默认选择</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edmenuurl" class="col-sm-2 control-label">URL</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edmenuurl"
+                                   placeholder="请输入菜单页面连接">
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="alert alert-danger" style="display:none" id="ederrmsg">输出数据不合法，请检查重新输入！</div>
+                <button id="esave" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            $.getJSON("/api/ProjectsAPI", function (data) {
+                var item = "<option value=-1>=请选择=</option>";
+                for (var i = 0; i < data.length; i++) {
+                    item += ' <option value="' + data[i].ProjectID + '">' + data[i].ProjectName + '</option>';
+                }
+                $("#project").empty().append(item);
+                $("#edproject").empty().append(item);
+            });
+            $("#menuno").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+            $("#menuname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+            $("#project").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+                $.getJSON("/api/AuthorityMenusAPI", { ProjectID: $(this).val()}, function (data) {
+                    var item = "<option value=''>=请选择=</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].ParentMenuCode == "") {
+                            item += ' <option value="' + data[i].MenuCode + '">' + data[i].MenuName + '</option>';
+                        }
+                    }
+                    $("#parentcode").empty().append(item);
+                });
+            });
+            $("#edproject").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+                $.getJSON("/api/AuthorityMenusAPI", { ProjectID: $(this).val()}, function (data) {
+                    var item = "<option value=''>=请选择=</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].ParentMenuCode == "") {
+                            item += ' <option value="' + data[i].MenuCode + '">' + data[i].MenuName + '</option>';
+                        }
+                    }
+                    $("#edparentcode").empty().append(item);
+                });
+            });
+            $("#parentcode").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+            $("#save").bind("click", function () {
+                var model = {};
+                model.MenuCode = $('#menuno').val();
+                model.MenuName = $('#menuname').val();
+                model.ParentMenuCode = $("#parentcode").val();
+                model.ProjectID = $("#project").val();
+                model.URL = $("#menuurl").val();
+                if (model.ProjectID == "-1") {
+                    $("#project").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.MenuCode == "") {
+                    $("#menuno").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.MenuName == "") {
+                    $("#menuname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                $.ajax({
+                    url: "/AuthorityMenus/Create",
+                    type: 'POST',
+                    data: { jsonstr: JSON.stringify(model) },
+                    success: function (data) {
+                        if (data == "OK") {
+                            location.href = "/AuthorityMenus/Index";
+                        }
+                    },
+                    error: function (error) {
+                        if (error.status == 500) {
+                            $("#errmsg").css("display", "block");
+                        }
+                    }
+                });
+            });
+        });
+        function Edit(id) {
+            $.ajax({
+                url: "/AuthorityMenus/GetForEdit",
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    $('#edmenuno').val(data.MenuCode);
+                    $('#edmenuname').val(data.MenuName);
+                    $("#edproject").val(data.ProjectID);
+                    $.ajax({
+                        url: "/api/AuthorityMenusAPI",
+                        type: 'GET',
+                        data: { ProjectID: data.ProjectID },
+                        async: false,
+                        success: function (data) {
+                            var item = "<option value=''>=请选择=</option>";
+                            for (var i = 0; i < data.length; i++) {
+                                if (data[i].ParentMenuCode == "") {
+                                    item += ' <option value="' + data[i].MenuCode + '">' + data[i].MenuName + '</option>';
+                                }
+                            }
+                            $("#edparentcode").empty().append(item);
+                        }
+                    });
+                    $("#edparentcode").val(data.ParentMenuCode);
+                    $("#edmenuurl").val(data.URL);
+                    $('#myEditModal').modal('show');
+                }
+            });
+
+            $("#esave").bind("click", function () {
+                var model = {};
+                model.MenuCode = $('#edmenuno').val();
+                model.MenuName = $('#edmenuname').val();
+                model.ParentMenuCode = $("#edparentcode").val();
+                model.ProjectID = $("#edproject").val();
+                model.URL = $("#edmenuurl").val();
+                if (model.ProjectID == "-1") {
+                    $("#edproject").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.MenuCode == "") {
+                    $("#edmenuno").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                if (model.MenuName == "") {
+                    $("#edmenuname").parents(".form-group").attr("class", "form-group has-error");
+                    return;
+                }
+                $.ajax({
+                    url: "/AuthorityMenus/Edit",
+                    type: 'POST',
+                    data: { jsonstr: JSON.stringify(model) },
+                    success: function (data) {
+                        location.href = "/AuthorityMenus/Index";
+                    },
+                    error: function (error) {
+                        if (error.status == 500) {
+                            $("#ederrmsg").css("display", "block");
+                        }
+                    }
+                });
+            });
+        }
+        function Delete(obj) {
+            if (confirm("确定要删除?")) {
+                $.ajax({
+                    url: "/AuthorityMenus/Delete",
+                    type: 'GET',
+                    data: { id: obj },
+                    success: function (data) {
+                        location.href = "/AuthorityMenus/Index";
+                    }
+                });
+            }
+        }
+    </script>
+}

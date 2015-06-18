@@ -8,7 +8,7 @@
     <ol class="breadcrumb">
         <li><a href="../Roles/Index">角色管理</a></li>
         <li><a href="../Users/Index">用户管理</a></li>
-        <li><a href="../RoleAuthoritys/Index">角色权限管理</a></li>
+        <li><a href="../AuthorityMenus/Index">角色权限管理</a></li>
     </ol>
 </div>
 
@@ -58,7 +58,7 @@
                                 @Html.DisplayFor(modelItem => item.Project.ProjectName)
                             </td>
                             <td>
-                                <a title="配置权限" href="javascript:SetAuthority('@item.RoleID');"><span class="glyphicon glyphicon-cog"></span></a>
+                                <a title="配置权限" href="javascript:SetAuthority('@item.RoleID','@item.ProjectID');"><span class="glyphicon glyphicon-cog"></span></a>
                                 &nbsp;&nbsp;
                                 <a title="编辑" href="javascript:Edit('@item.RoleID');"><span class=" glyphicon glyphicon-edit"></span></a>
                                 &nbsp;&nbsp;
@@ -154,6 +154,69 @@
     </div>
 </div>
 
+<div class="modal fade" id="SetModal" tabindex="-1" role="dialog" aria-labelledby="SetModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="SetModalLabel">配置权限</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="pidhid" value="" />
+                <input type="hidden" name="ridhid" value="" />
+                <div class="panel-group" id="accordion">
+
+                    @*<div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion"
+                                       href="#collapseOne">
+
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in">
+                                <div class="panel-body">
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion"
+                                       href="#collapseTwo">
+                                        点击我进行展开，再次点击我进行折叠。第 2 部分
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse">
+                                <div class="panel-body">
+
+                                    Nihil anim keffiyeh helvetica, craft beer labore wes anderson
+                                    cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
+                                    vice lomo.
+                                </div>
+                            </div>
+                        </div>*@
+
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+
+                <button id="saveAuthority" type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span> 提交
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span style="cursor:pointer" class="glyphicon glyphicon-remove"></span>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <script>
@@ -203,12 +266,27 @@
                         }
                     },
                     error: function (error) {
-                        if (error.status==500) {
+                        if (error.status == 500) {
                             $("#errmsg").css("display", "block");
                         }
                     }
                 });
             });
+
+            //$("#saveAuthority").bind("click", function () {
+            //    var roleid = $("#ridhid").val();
+            //    var proid = $("#pidhid").val();
+            //    var vm = {};
+            //    vm.ProjectID = proid;
+            //    vm.RoleID = roleid;
+
+            //    $("input[type=checkbox][flag=c]").each(function () {
+            //        if (this.checked) {
+
+            //        }
+            //    });
+
+            //});
         });
         function Edit(id) {
             $.ajax({
@@ -250,17 +328,54 @@
                 });
             });
         }
-        function Delete(obj) {
+        function Delete(id) {
             if (confirm("确定要删除?")) {
                 $.ajax({
                     url: "/Roles/Delete",
                     type: 'GET',
-                    data: { id: obj },
+                    data: { id: id },
                     success: function (data) {
                         location.href = "/Roles/Index";
                     }
                 });
             }
         }
+
+        var authJson = null;
+        function SetAuth(i, j) {
+            if (authJson!=null) {
+                //todo:设置是否可用
+            }
+            alert(authJson.Menus[i].ChildMenus[j].ChildMenuCode);
+            //alert(data.Menus[1].ChildMenus[1].ChildMenuCode);
+        }
+
+        function SetAuthority(rid, pid) {
+            $("#ridhid").val(rid);
+            $("#pidhid").val(pid);
+            $.getJSON("/api/AuthorityMenusAPI", { ProjectID: pid, flag: true }, function (data) {
+                authJson = data;
+                var strht = "";
+                for (var i = 0; i < data.Menus.length; i++) {
+                    strht += '<div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><input type="checkbox" flag="p" name="" value="' + data.Menus[i].MenuCode + '" />';
+                    strht += '<a data-toggle="collapse" data-parent="#accordion" href="#collapse' + i + '">';
+                    strht += data.Menus[i].MenuName;
+                    strht += '</a> </h4></div>';
+                    strht += '<div id="collapse' + i + '" class="panel-collapse collapse in"> <div class="panel-body">';
+                    strht += "<ol>";
+                    for (var j = 0; j < data.Menus[i].ChildMenus.length; j++) {
+                        //strht += '<li><input type="checkbox" flag="c"  onclick="SetAuth(' + data + ',' + i + ',' + j + ')" pcode="' + data.Menus[i].MenuCode + '"  value="' + data.Menus[i].ChildMenus[j].ChildMenuCode + '" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
+
+                        strht += '<li><input type="checkbox" flag="c" onclick="SetAuth('+i+','+j+');" pcode="' + data.Menus[i].MenuCode + '"  value="' + data.Menus[i].ChildMenus[j].ChildMenuCode + '" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
+                    }
+                    strht += "</ol>";
+                    strht += '</div></div></div>';
+                }
+                $("#accordion").empty().append(strht);
+
+                $('#SetModal').modal('show');
+            });
+        }
+
     </script>
 }

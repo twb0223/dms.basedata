@@ -18,6 +18,8 @@ namespace BaseData.Model
 
         public string ParentMenuCode { get; set; }
 
+        public string URL { get; set; }
+
         [Required]
         public int ProjectID { get; set; }
 
