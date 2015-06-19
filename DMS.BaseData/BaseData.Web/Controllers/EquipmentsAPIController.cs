@@ -11,7 +11,8 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using BaseData.DataAccess;
 using BaseData.Model;
-using BaseData.Web.Areas.HelpPage.Models;
+
+using BaseData.Web.ViewModels;
 
 namespace BaseData.Web.Controllers
 {

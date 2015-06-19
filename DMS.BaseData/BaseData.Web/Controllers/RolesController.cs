@@ -23,20 +23,14 @@ namespace BaseData.Web.Controllers
             return View(await db.Roles.Include(x => x.Project).ToListAsync());
         }
 
-        // GET: Roles/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public async Task<ActionResult> GetRolesByProjectID(int? ProjectID)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Role role = await db.Roles.FindAsync(id);
-            if (role == null)
-            {
-                return HttpNotFound();
-            }
-            return View(role);
+            var res = new JsonResult();
+            res.Data = await db.Roles.Where(x => x.ProjectID == ProjectID).ToListAsync();
+            res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return res;
         }
+
 
         [HttpPost]
         public async Task<ActionResult> Create(string jsonstr)

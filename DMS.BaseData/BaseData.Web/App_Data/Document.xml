@@ -184,6 +184,26 @@
         项目类型名称
       </summary>
     </member>
+    <member name="P:BaseData.Model.Role.RoleID">
+      <summary>
+        角色ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.Role.RoleName">
+      <summary>
+        角色名称
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.Role.ProjectID">
+      <summary>
+        所属项目
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.Role.Project">
+      <summary>
+        项目对象
+      </summary>
+    </member>
     <member name="T:BaseData.Model.Station">
       <summary>
         点位
@@ -217,6 +237,51 @@
     <member name="P:BaseData.Model.Station.Department">
       <summary>
         部门对象
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.User.UserID">
+      <summary>
+        用户ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.User.UserAccount">
+      <summary>
+        用户账号（登陆使用）
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.User.UserName">
+      <summary>
+        用户名称(显示用)
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.User.Password">
+      <summary>
+        用户密码
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.User.CreateTime">
+      <summary>
+        创建时间
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.User.Enable">
+      <summary>
+        是否可用 True:可用，false：禁用
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.User.DepartmentID">
+      <summary>
+        所属部门
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.User.ProjectID">
+      <summary>
+        所属项目
+      </summary>
+    </member>
+    <member name="P:BaseData.Model.User.RoleID">
+      <summary>
+        角色ID
       </summary>
     </member>
   </members>
@@ -752,6 +817,21 @@
       </summary>
       <param name="documentPath">The physical path to XML document.</param>
     </member>
+    <member name="M:BaseData.Web.Controllers.AuthorityMenusAPIController.GetAuthorityByProjectID(System.Int32)">
+      <summary>
+        获取指定项目的权限菜单
+      </summary>
+      <param name="ProjectID">项目ID</param>
+      <returns>全部菜单数据，未分组</returns>
+    </member>
+    <member name="M:BaseData.Web.Controllers.AuthorityMenusAPIController.GetAuthorityMenuByRoleID(System.Int32,System.Int32)">
+      <summary>
+        获取角色对应菜单
+      </summary>
+      <param name="RoleID">角色ID</param>
+      <param name="ProjectID">项目ID</param>
+      <returns>返回角色对应菜单JSON(已分组)</returns>
+    </member>
     <member name="T:BaseData.Web.Controllers.DepartmentsAPIController">
       <summary>
         部门信息API
@@ -795,7 +875,7 @@
       <param name="id">设备ID</param>
       <returns>设备对象</returns>
     </member>
-    <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.PostEquipment(BaseData.Web.Areas.HelpPage.Models.EqumentParameter)">
+    <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.PostEquipment(BaseData.Web.ViewModels.EqumentParameter)">
       <summary>
         添加设备，终端首次接入是调用
       </summary>
@@ -852,14 +932,77 @@
       <param name="EquipmentID">设备ID</param>
       <returns></returns>
     </member>
-    <member name="T:BaseData.Web.Areas.HelpPage.Models.EqumentParameter">
+    <member name="M:BaseData.Web.Controllers.UsersAPIController.GetCheckUser(System.String,System.String)">
+      <summary>
+        登陆用户获取账号信息，权限菜单
+      </summary>
+      <param name="Account">账号</param>
+      <param name="Password">密码(MD5加密)</param>
+      <returns>返回用户信息及权限菜单</returns>
+    </member>
+    <member name="T:BaseData.Web.ViewModels.EqumentParameter">
       <summary>
         设备参数类
       </summary>
     </member>
-    <member name="P:BaseData.Web.Areas.HelpPage.Models.EqumentParameter.EquipmentMac">
+    <member name="P:BaseData.Web.ViewModels.EqumentParameter.EquipmentMac">
       <summary>
         设备MAC地址
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.UserInfo.UserAccount">
+      <summary>
+        账号
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.UserInfo.UserName">
+      <summary>
+        用户姓名
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.UserInfo.RoleID">
+      <summary>
+        角色ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.UserInfo.RoleName">
+      <summary>
+        角色名称
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.UserInfo.ProjectID">
+      <summary>
+        所在项目ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.UserInfo.ProjectName">
+      <summary>
+        项目名称
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.UserInfo.DepartmentID">
+      <summary>
+        部门ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.UserInfo.DepartmentName">
+      <summary>
+        部门名称
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.UserInfo.MenuJson">
+      <summary>
+        权限菜单
+      </summary>
+    </member>
+    <member name="F:BaseData.Web.ViewModels.UserParameter.Account">
+      <summary>
+        账号
+      </summary>
+    </member>
+    <member name="F:BaseData.Web.ViewModels.UserParameter.Password">
+      <summary>
+        密码
       </summary>
     </member>
   </members>

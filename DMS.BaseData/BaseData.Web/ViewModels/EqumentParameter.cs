@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace BaseData.Web.Areas.HelpPage.Models
+namespace BaseData.Web.ViewModels
 {
     /// <summary>
     /// 设备参数类

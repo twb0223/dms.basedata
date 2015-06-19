@@ -7,9 +7,9 @@
 
 <div>
     <ol class="breadcrumb">
-        <li><a href="../Roles/Index">角色管理</a></li>
         <li><a href="../Users/Index">用户管理</a></li>
-        <li><a href="../AuthorityMenus/Index">权限菜单管理</a></li>
+        <li><a href="../Roles/Index">角色管理</a></li>
+        <li><a href="../AuthorityMenus/Index">角色权限管理</a></li>
     </ol>
 </div>
 
@@ -356,6 +356,7 @@
                     $("#edmenuname").parents(".form-group").attr("class", "form-group has-error");
                     return;
                 }
+
                 $.ajax({
                     url: "/AuthorityMenus/Edit",
                     type: 'POST',

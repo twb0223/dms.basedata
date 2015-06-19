@@ -11,7 +11,7 @@ namespace BaseData.Model
     public class AuthorityMenu
     {
         [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+ 
         public string MenuCode { get; set; }
 
         [Required]

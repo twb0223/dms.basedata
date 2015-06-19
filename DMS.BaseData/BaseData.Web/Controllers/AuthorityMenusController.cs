@@ -24,21 +24,6 @@ namespace BaseData.Web.Controllers
             return View(await authorityMenus.ToListAsync());
         }
 
-        // GET: AuthorityMenus/Details/5
-        public async Task<ActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            AuthorityMenu authorityMenu = await db.AuthorityMenus.FindAsync(id);
-            if (authorityMenu == null)
-            {
-                return HttpNotFound();
-            }
-            return View(authorityMenu);
-        }
-
         [HttpPost]
         public async Task<ActionResult> Create(string jsonstr)
         {
@@ -71,11 +56,6 @@ namespace BaseData.Web.Controllers
             else
             {
                 var res = new JsonResult();
-                //var vm = new
-                //{
-                //    ProjectID = model.ProjectID,
-                //    RoleName = model.RoleName
-                //};
                 res.Data = model;
                 res.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
                 return res;

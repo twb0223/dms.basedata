@@ -35,6 +35,7 @@ namespace BaseData.Model
         /// 用户密码
         /// </summary>
         [Required]
+        [MaxLength(50)]
         public string Password { get; set; }
 
         /// <summary>
@@ -48,18 +49,31 @@ namespace BaseData.Model
         public bool Enable { get; set; }
 
         /// <summary>
-        /// 所属项目
+        /// 所属部门
         /// </summary>
         [Required]
-        public int ProjectID { get; set; }
+        public int DepartmentID { get; set; }
 
+    
         /// <summary>
         /// 所属项目
         /// </summary>
         [Required]
-        public int DepartmetnID { get; set; }
+        public int ProjectID { get; set; }
+        
 
+        /// <summary>
+        /// 角色ID
+        /// </summary>
+        [Required]
+        public int RoleID { get; set; }
+        ///// <summary>
+        ///// 所属项目
+        ///// </summary>
+        //[Required]
+        //public int DepartmentID { get; set; }
 
+        //public virtual Department Project { get; set; }
 
     }
 }
