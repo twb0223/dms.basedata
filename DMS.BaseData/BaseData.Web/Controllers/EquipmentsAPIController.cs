@@ -85,6 +85,18 @@ namespace BaseData.Web.Controllers
             string strsql = "Select * from [View_EquipmentStationDetail] where ProjectID=@ProjectID";
             return db.Database.SqlQuery<EquipmentStations_VM>(strsql, new SqlParameter("@ProjectID", ProjectID)).AsQueryable();
         }
+
+        /// <summary>
+        /// 获取指定部门下所有设备点位信息
+        /// </summary>
+        /// <param name="ProjectID">部门ID</param>
+        /// <returns>返回设备点位集合</returns>
+        public IQueryable<EquipmentStations_VM> GetEquipmentStationsListByDepartmentID(int DepartmentID)
+        {
+            string strsql = "Select * from [View_EquipmentStationDetail] where DepartmentID=@DepartmentID";
+            return db.Database.SqlQuery<EquipmentStations_VM>(strsql, new SqlParameter("@DepartmentID", DepartmentID)).AsQueryable();
+        }
+
         /// <summary>
         /// 通过Mac地址获取设备信息(Mac地址唯一)
         /// </summary>

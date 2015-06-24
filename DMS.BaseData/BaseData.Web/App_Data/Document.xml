@@ -895,6 +895,13 @@
       <param name="ProjectID">项目ID</param>
       <returns>返回设备点位集合</returns>
     </member>
+    <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.GetEquipmentStationsListByDepartmentID(System.Int32)">
+      <summary>
+        获取指定部门下所有设备点位信息
+      </summary>
+      <param name="ProjectID">部门ID</param>
+      <returns>返回设备点位集合</returns>
+    </member>
     <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.GetEquipmentStationsListByProject(System.String)">
       <summary>
         通过Mac地址获取设备信息(Mac地址唯一)
