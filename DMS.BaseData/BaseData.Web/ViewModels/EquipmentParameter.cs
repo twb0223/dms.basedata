@@ -8,7 +8,7 @@ namespace BaseData.Web.ViewModels
     /// <summary>
     /// 设备参数类
     /// </summary>
-    public class EqumentParameter : BaseData.Web.Areas.HelpPage.Parameter
+    public class EquipmentParameter : BaseData.Web.Areas.HelpPage.Parameter
     {
         /// <summary>
         /// 设备MAC地址

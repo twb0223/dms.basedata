@@ -103,28 +103,18 @@ namespace BaseData.Web.Controllers
             }
             return res;
         }
-        // GET: Equements/Details/5
-        public async Task<ActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Equipment equement = await db.Equipments.FindAsync(id);
-            if (equement == null)
-            {
-                return HttpNotFound();
-            }
-            return View(equement);
-        }
 
         [HttpPost]
         public async Task<ActionResult> Create(string jsonstr)
         {
             var res = new JsonResult();
-            if (ModelState.IsValid)
+            var model = JsonConvert.DeserializeObject<Equipment>(jsonstr);
+            if (db.Equipments.Count(x => x.EquipmentMac == model.EquipmentMac) > 0)
             {
-                var model = JsonConvert.DeserializeObject<Equipment>(jsonstr);
+                res.Data = "该设备Mac地址已注册，请检查！";
+            }
+            else
+            {
                 model.Status = 0;
                 model.CreateTime = DateTime.Now;
                 model.CreateBy = "Client";
@@ -132,10 +122,6 @@ namespace BaseData.Web.Controllers
                 db.Equipments.Add(model);
                 await db.SaveChangesAsync();
                 res.Data = "OK";
-            }
-            else
-            {
-                res.Data = "ERROR";
             }
             return res;
         }
@@ -151,20 +137,49 @@ namespace BaseData.Web.Controllers
         public async Task<ActionResult> Edit(string jsonstr)
         {
             var res = new JsonResult();
-            if (ModelState.IsValid)
+
+            var model = JsonConvert.DeserializeObject<Equipment>(jsonstr);
+            model.CreateTime = DateTime.Now;
+            model.CreateBy = "Client";
+            model.ClientChangeFlag = Guid.NewGuid().ToString();
+
+            var entity = db.Equipments.Find(model.EquipmentID);
+            if (entity.EquipmentMac != model.EquipmentMac)
             {
-                var model = JsonConvert.DeserializeObject<Equipment>(jsonstr);
-                model.CreateTime = DateTime.Now;
-                model.CreateBy = "Client";
-                model.ClientChangeFlag = Guid.NewGuid().ToString();
-                db.Entry(model).State = EntityState.Modified;
+                if (db.Equipments.Count(x => x.EquipmentMac == model.EquipmentMac) > 0)
+                {
+                    res.Data = "该设备Mac地址已注册，请检查！";
+                    return res;
+                }
+                else
+                {
+
+                }
+            }
+            entity.ClientChangeFlag = model.ClientChangeFlag;
+            entity.CreateBy = model.CreateBy;
+            entity.CreateTime = model.CreateTime;
+            entity.EquipmentCPU = model.EquipmentCPU;
+            entity.EquipmentDisk = model.EquipmentDisk;
+            entity.EquipmentID = model.EquipmentID;
+            entity.EquipmentIP = model.EquipmentIP;
+            entity.EquipmentMac = model.EquipmentMac;
+            entity.EquipmentName = model.EquipmentName;
+            entity.EquipmentTypeID = model.EquipmentTypeID;
+            entity.OsTypeID = model.OsTypeID;
+
+            try
+            {
+                db.Entry(entity).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 res.Data = "OK";
             }
-            else
+            catch (Exception)
             {
-                res.Data = "ERROR";
+                res.Data = "Error";
             }
+
+
             return res;
         }
 
@@ -182,7 +197,6 @@ namespace BaseData.Web.Controllers
             }
             else
             {
-
                 //todo:删除点位关系，重置点位状态
                 var EQEntity = db.EquipmentStations.Where(x => x.EquipmentID == id).FirstOrDefault();
                 if (EQEntity != null)

@@ -17,6 +17,9 @@ using Newtonsoft.Json;
 
 namespace BaseData.Web.Controllers
 {
+    /// <summary>
+    /// 用户信息API
+    /// </summary>
     public class UsersAPIController : ApiController
     {
         private MyDataContext db = new MyDataContext();
@@ -36,10 +39,22 @@ namespace BaseData.Web.Controllers
 
             if (vm == null)
             {
-                return NotFound();
+                var res = new
+                {
+                    Result = "None"
+                };
+                return Json(res);
             }
             else
             {
+                if (!vm.Enable) //如果该账号被锁定
+                {
+                    var res = new
+                    {
+                        Result = "账号被锁定，请联系管理员！"
+                    };
+                    return Json(res);
+                }
                 model.UserAccount = vm.UserAccount;
                 model.UserName = vm.UserName;
                 model.RoleID = vm.RoleID;

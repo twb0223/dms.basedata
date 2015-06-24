@@ -30,7 +30,7 @@ namespace BaseData.Web.Controllers
         {
             return db.Stations;
         }
-        // GET: api/DepartmentsAPI?ProjectID={ProjectID}
+      
         /// <summary>
         ///通过部门编号获取点位集合 
         /// </summary>
@@ -40,6 +40,17 @@ namespace BaseData.Web.Controllers
         {
             return db.Stations.Where(x => x.DepartmentID == DepartmentID);
         }
+
+        /// <summary>
+        /// 通过项目编号获取所有点位列表
+        /// </summary>
+        /// <param name="ProjectID">项目ID</param>
+        /// <returns>返回该项目下所有点位信息</returns>
+        public IQueryable<Station> GetStationsByProjectID(int ProjectID)
+        {
+            return db.Stations.Include(x => x.Department).Where(x => x.Department.ProjectID == ProjectID);
+        }
+
 
         // GET: api/StationsAPI/5
         /// <summary>
@@ -60,25 +71,6 @@ namespace BaseData.Web.Controllers
                 return Json(vm);
             }
             return Ok(station);
-        }
-        /// <summary>
-        /// 获取设备点位关系明细
-        /// </summary>
-        /// <param name="EquipmentID">设备ID</param>
-        /// <returns></returns>
-        [ResponseType(typeof(EquipmentStation))]
-        public async Task<IHttpActionResult> GetEquipmentStation(string EquipmentID)
-        {
-            EquipmentStation es = await db.EquipmentStations.Include(x => x.Equipment).Include(x => x.Station).Where(x => x.EquipmentID == EquipmentID).FirstOrDefaultAsync();
-            if (es == null)
-            {
-                var vm = new
-                {
-                    Result = "None"
-                };
-                return Json(vm);
-            }
-            return Ok(es);
         }
 
         //// PUT: api/StationsAPI/5

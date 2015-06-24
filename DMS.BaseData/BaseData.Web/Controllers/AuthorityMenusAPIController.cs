@@ -16,6 +16,9 @@ using Newtonsoft.Json;
 
 namespace BaseData.Web.Controllers
 {
+    /// <summary>
+    /// 权限菜单API
+    /// </summary>
     public class AuthorityMenusAPIController : ApiController
     {
         private MyDataContext db = new MyDataContext();
@@ -112,7 +115,58 @@ namespace BaseData.Web.Controllers
             var raety = await db.RoleAuthoritys.Where(x => x.RoleID == RoleID).FirstOrDefaultAsync();
             if (raety != null)
             {
-                return Json(JsonConvert.DeserializeObject<RoleAuthorityMenus>(raety.MenuJson));
+                var ram1 = JsonConvert.DeserializeObject<RoleAuthorityMenus>(raety.MenuJson);
+                var amList = await db.AuthorityMenus.Include(x => x.Project).Where(x => x.ProjectID == ProjectID).ToListAsync();
+                RoleAuthorityMenus ram = new RoleAuthorityMenus();
+                List<ParentMenu> rpmlist = new List<ParentMenu>();
+                var pmlist = amList.Where(x => x.ParentMenuCode == "");//父级菜单列表
+                var cmlist = amList.Where(x => x.ParentMenuCode != "");//子级菜单
+
+                foreach (var pm in pmlist)
+                {
+                    ParentMenu p = new ParentMenu();
+                    p.MenuCode = pm.MenuCode;
+                    p.MenuName = pm.MenuName;
+                    p.URL = pm.URL;
+
+                    var auentity = ram1.Menus.Where(x => x.MenuCode == p.MenuCode).FirstOrDefault();
+                    if (auentity != null)
+                    {
+                        p.Enable = auentity.Enable;
+                    }
+                    else
+                    {
+                        p.Enable = false;
+                    }
+                    List<ChildMenu> rcmlist = new List<ChildMenu>();
+                    foreach (var cm in cmlist)
+                    {
+                        if (cm.ParentMenuCode == pm.MenuCode)
+                        {
+                            ChildMenu c = new ChildMenu();
+                            c.ChildMenuCode = cm.MenuCode;
+                            c.ChildMenuName = cm.MenuName;
+                            c.URL = cm.URL;
+
+                            var chentity = auentity.ChildMenus.Where(x => x.ChildMenuCode == cm.MenuCode).FirstOrDefault();
+                            if (chentity != null)
+                            {
+                                c.Enable = chentity.Enable;
+                            }
+                            else
+                            {
+                                c.Enable = false;
+                            }
+                            rcmlist.Add(c);
+                        }
+                    }
+                    p.ChildMenus = rcmlist;
+                    rpmlist.Add(p);
+                }
+                ram.Menus = rpmlist;
+                ram.ProjectID = ProjectID;
+                return Json(ram);
+
             }
             else
             {
@@ -128,6 +182,7 @@ namespace BaseData.Web.Controllers
                     p.MenuCode = pm.MenuCode;
                     p.MenuName = pm.MenuName;
                     p.URL = pm.URL;
+                    p.Enable = false;
                     List<ChildMenu> rcmlist = new List<ChildMenu>();
                     foreach (var cm in cmlist)
                     {

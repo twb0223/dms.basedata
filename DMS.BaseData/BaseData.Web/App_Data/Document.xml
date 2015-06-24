@@ -285,6 +285,7 @@
       </summary>
     </member>
   </members>
+
   <assembly>
     <name>BaseData.Web</name>
   </assembly>
@@ -817,6 +818,11 @@
       </summary>
       <param name="documentPath">The physical path to XML document.</param>
     </member>
+    <member name="T:BaseData.Web.Controllers.AuthorityMenusAPIController">
+      <summary>
+        权限菜单API
+      </summary>
+    </member>
     <member name="M:BaseData.Web.Controllers.AuthorityMenusAPIController.GetAuthorityByProjectID(System.Int32)">
       <summary>
         获取指定项目的权限菜单
@@ -870,16 +876,37 @@
     </member>
     <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.GetEquipment(System.String)">
       <summary>
-        获取设备对象
+        获取设备对象,
       </summary>
       <param name="id">设备ID</param>
       <returns>设备对象</returns>
     </member>
-    <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.PostEquipment(BaseData.Web.ViewModels.EqumentParameter)">
+    <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.GetEquipmentStations(System.String)">
+      <summary>
+        获取设备点位详细信息
+      </summary>
+      <param name="EquipmentID">设备ID</param>
+      <returns></returns>
+    </member>
+    <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.GetEquipmentStationsListByProject(System.Int32)">
+      <summary>
+        获取指定项目下所有设备点位信息
+      </summary>
+      <param name="ProjectID">项目ID</param>
+      <returns>返回设备点位集合</returns>
+    </member>
+    <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.GetEquipmentStationsListByProject(System.String)">
+      <summary>
+        通过Mac地址获取设备信息(Mac地址唯一)
+      </summary>
+      <param name="EquipmentMac">设备MAC地址</param>
+      <returns>返回设备信息</returns>
+    </member>
+    <member name="M:BaseData.Web.Controllers.EquipmentsAPIController.PostEquipment(BaseData.Web.ViewModels.EquipmentParameter)">
       <summary>
         添加设备，终端首次接入是调用
       </summary>
-      <param name="equipment">设备对象</param>
+      <param name="para">设备对象</param>
       <returns>结果OK，Error</returns>
     </member>
     <member name="T:BaseData.Web.Controllers.ProjectsAPIController">
@@ -895,10 +922,10 @@
     </member>
     <member name="M:BaseData.Web.Controllers.ProjectsAPIController.GetProject(System.Int32)">
       <summary>
-        获取部门对象
+        获取单个项目信息
       </summary>
-      <param name="id">部门ID</param>
-      <returns>返回部门对象</returns>
+      <param name="id">项目ID</param>
+      <returns>返回项目信息</returns>
     </member>
     <member name="T:BaseData.Web.Controllers.StationsAPIController">
       <summary>
@@ -918,6 +945,13 @@
       <param name="DepartmentID">部门ID</param>
       <returns>返回该部门下所有点位</returns>
     </member>
+    <member name="M:BaseData.Web.Controllers.StationsAPIController.GetStationsByProjectID(System.Int32)">
+      <summary>
+        通过项目编号获取所有点位列表
+      </summary>
+      <param name="ProjectID">项目ID</param>
+      <returns>返回该项目下所有点位信息</returns>
+    </member>
     <member name="M:BaseData.Web.Controllers.StationsAPIController.GetStation(System.String)">
       <summary>
         通过点位ID获取点位
@@ -925,12 +959,10 @@
       <param name="id">点位ID</param>
       <returns>点位实体</returns>
     </member>
-    <member name="M:BaseData.Web.Controllers.StationsAPIController.GetEquipmentStation(System.String)">
+    <member name="T:BaseData.Web.Controllers.UsersAPIController">
       <summary>
-        获取设备点位关系明细
+        用户信息API
       </summary>
-      <param name="EquipmentID">设备ID</param>
-      <returns></returns>
     </member>
     <member name="M:BaseData.Web.Controllers.UsersAPIController.GetCheckUser(System.String,System.String)">
       <summary>
@@ -940,12 +972,127 @@
       <param name="Password">密码(MD5加密)</param>
       <returns>返回用户信息及权限菜单</returns>
     </member>
-    <member name="T:BaseData.Web.ViewModels.EqumentParameter">
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.EquipmentID">
+      <summary>
+        设备ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.StationID">
+      <summary>
+        点位ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.OsTypeName">
+      <summary>
+        操作系统
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.EquipmentTypeName">
+      <summary>
+        设备类别
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.EquipmentName">
+      <summary>
+        设备名称
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.EquipmentMac">
+      <summary>
+        设备mac地址
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.EquipmentCPU">
+      <summary>
+        设备cpu
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.EquipmentDisk">
+      <summary>
+        设备存储介质
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.Status">
+      <summary>
+        设备状态
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.ClientChangeFlag">
+      <summary>
+        变更标识
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.CreateTime">
+      <summary>
+        创建时间
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.CreateBy">
+      <summary>
+        创建人
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.OsTypeID">
+      <summary>
+        操作系统类型ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.EquipmentTypeID">
+      <summary>
+        设备类型ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.StationName">
+      <summary>
+        点位名称
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.StationDes">
+      <summary>
+        点位描述
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.DepartmentID">
+      <summary>
+        部门ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.DepartmentName">
+      <summary>
+        部门名称
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.ProjectID">
+      <summary>
+        项目ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.ProjectName">
+      <summary>
+        项目名称
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.ProjectTypeID">
+      <summary>
+        项目类型ID
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.ProjectTypeName">
+      <summary>
+        项目类型名称
+      </summary>
+    </member>
+    <member name="P:BaseData.Web.ViewModels.EquipmentStations_VM.EquipmentIP">
+      <summary>
+        设备IP地址
+      </summary>
+    </member>
+    <member name="T:BaseData.Web.ViewModels.EquipmentParameter">
       <summary>
         设备参数类
       </summary>
     </member>
-    <member name="P:BaseData.Web.ViewModels.EqumentParameter.EquipmentMac">
+    <member name="P:BaseData.Web.ViewModels.EquipmentParameter.EquipmentMac">
       <summary>
         设备MAC地址
       </summary>

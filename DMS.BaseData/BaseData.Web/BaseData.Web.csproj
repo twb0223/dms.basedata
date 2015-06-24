@@ -188,7 +188,8 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Department_ProjectVM.cs" />
-    <Compile Include="ViewModels\EqumentParameter.cs" />
+    <Compile Include="ViewModels\EquipmentStations_VM.cs" />
+    <Compile Include="ViewModels\EquipmentParameter.cs" />
     <Compile Include="ViewModels\RoleAuthority_MenuVM.cs" />
     <Compile Include="ViewModels\UserInfo.cs" />
     <Compile Include="ViewModels\UserParameter.cs" />

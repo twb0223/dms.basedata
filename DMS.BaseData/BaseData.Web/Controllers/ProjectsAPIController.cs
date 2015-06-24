@@ -33,10 +33,10 @@ namespace BaseData.Web.Controllers
 
         // GET: api/ProjectsAPI/5
         /// <summary>
-        /// 获取部门对象
+        /// 获取单个项目信息
         /// </summary>
-        /// <param name="id">部门ID</param>
-        /// <returns>返回部门对象</returns>
+        /// <param name="id">项目ID</param>
+        /// <returns>返回项目信息</returns>
         [ResponseType(typeof(Project))]
         public async Task<IHttpActionResult> GetProject(int id)
         {

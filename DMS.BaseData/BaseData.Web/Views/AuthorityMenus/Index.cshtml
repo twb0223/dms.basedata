@@ -9,7 +9,7 @@
     <ol class="breadcrumb">
         <li><a href="../Users/Index">用户管理</a></li>
         <li><a href="../Roles/Index">角色管理</a></li>
-        <li><a href="../AuthorityMenus/Index">角色权限管理</a></li>
+        <li><a href="../AuthorityMenus/Index">权限菜单管理</a></li>
     </ol>
 </div>
 
@@ -20,7 +20,7 @@
                 <table width="100%">
                     <tr>
                         <td>
-                            <h2 class="panel-title">角色管理</h2>
+                            <h2 class="panel-title">权限菜单管理</h2>
                         </td>
                         <td class="pull-right">
                             <a href="#" data-toggle="modal" data-backdrop="static" data-target="#myModal" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> 新建</a>
@@ -185,7 +185,7 @@
                         <label for="edproject" class="col-sm-2 control-label">所属项目</label>
                         <div class="col-sm-10">
                             <select class="form-control" id="edproject">
-                                <option value="">默认选择</option>
+                              
                             </select>
                         </div>
                     </div>
@@ -195,7 +195,7 @@
                         <label for="edparentcode" class="col-sm-2 control-label">父级菜单</label>
                         <div class="col-sm-10">
                             <select class="form-control" id="edparentcode">
-                                <option value="">默认选择</option>
+                               
                             </select>
                         </div>
                     </div>
@@ -204,7 +204,7 @@
                         <label for="edmenuurl" class="col-sm-2 control-label">URL</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="edmenuurl"
-                                   placeholder="请输入菜单页面连接">
+                                   placeholder="请输入菜单页面URL" disabled>
                         </div>
                     </div>
 
@@ -241,11 +241,18 @@
             $("#menuno").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
             });
+            $("#edmenuno").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
             $("#menuname").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+            $("#edmenuname").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
             });
             $("#project").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
+           
                 $.getJSON("/api/AuthorityMenusAPI", { ProjectID: $(this).val()}, function (data) {
                     var item = "<option value=''>=请选择=</option>";
                     for (var i = 0; i < data.length; i++) {
@@ -269,6 +276,9 @@
                 });
             });
             $("#parentcode").bind("change", function () {
+                $(this).parents(".form-group").attr("class", "form-group");
+            });
+            $("#edparentcode").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
             });
             $("#save").bind("click", function () {
@@ -373,7 +383,7 @@
             });
         }
         function Delete(obj) {
-            if (confirm("确定要删除?")) {
+            if (confirm("提示:以下操作将会删除该菜单，是否继续?")) {
                 $.ajax({
                     url: "/AuthorityMenus/Delete",
                     type: 'GET',

@@ -82,7 +82,6 @@
             </div>
             <div class="modal-body">
                 <div class=" form-horizontal">
-
                     <div class="form-group">
                         <label for="rolename" class="col-sm-2 control-label">角色名称</label>
                         <div class="col-sm-10">
@@ -90,7 +89,6 @@
                                    placeholder="请输入角色名称">
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="project" class="col-sm-2 control-label">所属项目</label>
                         <div class="col-sm-10">
@@ -99,10 +97,8 @@
                             </select>
                         </div>
                     </div>
-
                 </div>
             </div>
-
             <div class="modal-footer">
                 <div class="alert alert-danger" style="display:none" id="errmsg">输出数据不合法，请检查重新输入！</div>
                 <button id="save" type="button" class="btn btn-default btn-sm">
@@ -165,46 +161,7 @@
                 <input type="hidden" id="pidhid" value="" />
                 <input type="hidden" id="ridhid" value="" />
                 <div class="panel-group" id="accordion">
-
-                    @*<div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion"
-                                       href="#collapseOne">
-
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse in">
-                                <div class="panel-body">
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion"
-                                       href="#collapseTwo">
-                                        点击我进行展开，再次点击我进行折叠。第 2 部分
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseTwo" class="panel-collapse collapse">
-                                <div class="panel-body">
-
-                                    Nihil anim keffiyeh helvetica, craft beer labore wes anderson
-                                    cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
-                                    vice lomo.
-                                </div>
-                            </div>
-                        </div>*@
-
-
                 </div>
-
-
             </div>
             <div class="modal-footer">
 
@@ -273,7 +230,6 @@
                     }
                 });
             });
-
             $("#saveAuthority").bind("click", function () {
                 var rid = $("#ridhid").val();
                 $.ajax({
@@ -284,7 +240,6 @@
                         location.href = "/Roles/Index";
                     }
                 });
-
             });
         });
         function Edit(id) {
@@ -298,7 +253,6 @@
                     $('#myEditModal').modal('show');
                 }
             });
-
             $("#esave").bind("click", function () {
                 var model = {};
                 model.RoleID = id;
@@ -339,8 +293,6 @@
                 });
             }
         }
-
-
         function SetAuth(obj, i, j) {
             if (authJson != null) {
                 //todo:设置是否可用
@@ -351,7 +303,15 @@
                 }
             }
         }
-
+        function SetPAuth(obj, i) {
+            if (authJson != null) {
+                if (obj.checked) {
+                    authJson.Menus[i].Enable = true;
+                } else {
+                    authJson.Menus[i].Enable = false;
+                }
+            }
+        }
         function SetAuthority(rid, pid) {
             $("#ridhid").val(rid);
             $("#pidhid").val(pid);
@@ -360,21 +320,35 @@
                 var strht = "";
                 for (var i = 0; i < data.Menus.length; i++) {
                     strht += '<div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">';
+
+                    if (data.Menus[i].ChildMenus.length == 0) {
+                        if (data.Menus[i].Enable) {
+                            strht += '<input type="checkbox" checked=checked onclick="SetPAuth(this,' + i + ');"/>';
+                        }
+                        else {
+                            strht += '<input type="checkbox" onclick="SetPAuth(this,' + i + ');"/>';
+                        }
+                    }
                     strht += '<a data-toggle="collapse" data-parent="#accordion" href="#collapse' + i + '">';
                     strht += data.Menus[i].MenuName;
                     strht += '</a> </h4></div>';
-                    strht += '<div id="collapse' + i + '" class="panel-collapse collapse in"> <div class="panel-body">';
-                    strht += "<ol style='list-style-type:none'>";
-                    for (var j = 0; j < data.Menus[i].ChildMenus.length; j++) {
-                        if (data.Menus[i].ChildMenus[j].Enable) {
-                            strht += '<li><input type="checkbox" checked=true onclick="SetAuth(this,' + i + ',' + j + ');" pcode="' + data.Menus[i].MenuCode + '"  value="' + data.Menus[i].ChildMenus[j].ChildMenuCode + '" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
+
+                    if (data.Menus[i].ChildMenus.length > 0) {
+                        strht += '<div id="collapse' + i + '" class="panel-collapse collapse in"> <div class="panel-body">';
+                        strht += "<ol style='list-style-type:none'>";
+
+                        for (var j = 0; j < data.Menus[i].ChildMenus.length; j++) {
+                            if (data.Menus[i].ChildMenus[j].Enable) {
+                                strht += '<li><input type="checkbox"  checked=checked onclick="SetAuth(this,' + i + ',' + j + ');" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
+                            }
+                            else {
+                                strht += '<li><input type="checkbox"  onclick="SetAuth(this,' + i + ',' + j + ');" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
+                            }
                         }
-                        else {
-                            strht += '<li><input type="checkbox"  onclick="SetAuth(this,' + i + ',' + j + ');" pcode="' + data.Menus[i].MenuCode + '"  value="' + data.Menus[i].ChildMenus[j].ChildMenuCode + '" />' + data.Menus[i].ChildMenus[j].ChildMenuName + '</li>';
-                        }
+                        strht += "</ol>";
+                        strht += '</div></div>';
                     }
-                    strht += "</ol>";
-                    strht += '</div></div></div>';
+                    strht += '</div>';
                 }
                 $("#accordion").empty().append(strht);
 

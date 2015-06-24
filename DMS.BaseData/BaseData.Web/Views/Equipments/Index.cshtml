@@ -399,6 +399,9 @@
                         if (data == "OK") {
                             location.href = "/Equipments/Index";
                         }
+                        else {
+                            $("#errmsg").css("display", "block").text(data);
+                        }
                     }, error: function (error) {
                         if (error.status == 500) {
                             $("#errmsg").css("display", "block");
@@ -412,12 +415,14 @@
             });
             $("#equmac").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
+                $("#errmsg").css("display", "none");
             });
             $("#edequname").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
             });
             $("#edequmac").bind("change", function () {
                 $(this).parents(".form-group").attr("class", "form-group");
+                $("#ederrmsg").css("display", "none");
             });
             ///当点位配置弹出是触发
             $('#SetModal').on('show.bs.modal', function () {
@@ -533,7 +538,11 @@
                     type: 'POST',
                     data: { jsonstr: JSON.stringify(model) },
                     success: function (data) {
-                        location.href = "/Equipments/Index";
+                        if (data == "OK") {
+                            location.href = "/Equipments/Index";
+                        } else {
+                            $("#ederrmsg").css("display", "block").text(data);
+                        }
                     }, error: function (error) {
                         if (error.status == 500) {
                             $("#ederrmsg").css("display", "block");
