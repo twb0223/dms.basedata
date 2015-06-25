@@ -42,7 +42,7 @@
                                 <select class="form-control" id="reqtype">
                                     <option value="GET">GET</option>
                                     <option value="POST">POST</option>
-                                    <option value="PUT">POST</option>
+                                    <option value="PUT">PUT</option>
                                     <option value="DELETE">DELETE</option>
                                 </select>
                             </div>
@@ -90,26 +90,17 @@
             $("#send").bind("click", function () {
                 var url = $("#url").val();
                 var type = $("#reqtype").val();
-                var reqdata = $("#request").val();
-                if (type == "GET") {
-                    $.getJSON(url, function (data) {
-                        if (data != null) {
-                            $("#respone").val(JSON.stringify(data));
-                        }
-                    });
-                }
-                else {
-                    $.ajax({
-                        url: url,
-                        type: type,
-                        data: { para: reqdata },
-                        success: function (data) {
-                            $("#respone").val(JSON.stringify(data));
-                        }, error: function (error) {
-                            $("#respone").val(error);
-                        }
-                    });
-                }
+                var reqdata = $("#request").val() == "" ? null : $("#request").val();
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: eval('(' + reqdata + ')'),
+                    success: function (data) {
+                        $("#respone").val(JSON.stringify(data));
+                    }, error: function (error) {
+                        $("#respone").val(error.responseText);
+                    }
+                });
             });
             $("#clear").bind("click", function () { $(".form-control").val(""); });
         });

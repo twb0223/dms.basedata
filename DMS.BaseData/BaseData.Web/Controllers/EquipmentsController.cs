@@ -151,10 +151,6 @@ namespace BaseData.Web.Controllers
                     res.Data = "该设备Mac地址已注册，请检查！";
                     return res;
                 }
-                else
-                {
-
-                }
             }
             entity.ClientChangeFlag = model.ClientChangeFlag;
             entity.CreateBy = model.CreateBy;
