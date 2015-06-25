@@ -22,7 +22,6 @@ namespace BaseData.Web.Controllers
         {
             return ajaxSearchGetResult(key, id);
         }
-
         private ActionResult ajaxSearchGetResult(string key, int id = 1)
         {
             var qry = db.Stations.Include(x => x.Department).Include(x => x.Department.Project).AsQueryable();
