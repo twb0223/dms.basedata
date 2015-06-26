@@ -6,8 +6,8 @@
 
 <div>
     <ol class="breadcrumb">
-        <li><a href="../EquipmentStations/Index">设备点位列表</a></li>
         <li><a href="../Equipments/Index">设备管理</a></li>
+        <li><a href="../EquipmentStations/Index">设备点位列表</a></li>
     </ol>
 </div>
 
@@ -66,11 +66,11 @@
                     </div>
 
                     @*<div class="form-group">
-                        <label for="setequname" class="col-sm-2 control-label">设备名称</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="setequname" disabled>
-                        </div>
-                    </div>*@
+                            <label for="setequname" class="col-sm-2 control-label">设备名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="setequname" disabled>
+                            </div>
+                        </div>*@
 
                     <div class="form-group">
                         <label for="curStation" class="col-sm-2 control-label">当前点位</label>
@@ -216,7 +216,7 @@
                     if (data != "none") {
                         $("#esid").val(data.ID);
                         $("#oldstationid").val(data.StationID);
-                       // $("#setequname").val(data.EquipmentName);
+                        // $("#setequname").val(data.EquipmentName);
                         $("#curStation").text(data.ProjectName + "-" + data.DepartmentName + "-" + data.StationName);
                     }
                     else {

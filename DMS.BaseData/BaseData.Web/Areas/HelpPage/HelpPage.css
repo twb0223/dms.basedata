@@ -8,7 +8,7 @@
 .help-page-table th,
 .help-page-table pre,
 .help-page-table p {
-    font-family: 'Consolas';
+   font-family: Microsoft YaHei,'ËÎÌו' , Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
 }
 
 .help-page pre.wrapped {
