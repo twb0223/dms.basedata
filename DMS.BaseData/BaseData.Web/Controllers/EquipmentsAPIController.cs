@@ -52,7 +52,6 @@ namespace BaseData.Web.Controllers
                 };
                 return Json(vm);
             }
-
             return Ok(equipment);
         }
         /// <summary>
