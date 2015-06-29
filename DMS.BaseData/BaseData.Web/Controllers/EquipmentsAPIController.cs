@@ -89,7 +89,7 @@ namespace BaseData.Web.Controllers
         /// <summary>
         /// 获取指定部门下所有设备点位信息
         /// </summary>
-        /// <param name="ProjectID">部门ID</param>
+        /// <param name="DepartmentID">部门ID</param>
         /// <returns>返回设备点位集合</returns>
         public IQueryable<EquipmentStations_VM> GetEquipmentStationsListByDepartmentID(int DepartmentID)
         {
