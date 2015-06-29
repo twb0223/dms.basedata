@@ -23,7 +23,7 @@ namespace BaseData.Web.Controllers
     public class EquipmentsAPIController : ApiController
     {
         private MyDataContext db = new MyDataContext();
-        
+       
         // GET: api/EquipmentsAPI
         /// <summary>
         /// 获取设备列表
