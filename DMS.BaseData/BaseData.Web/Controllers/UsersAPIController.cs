@@ -63,7 +63,20 @@ namespace BaseData.Web.Controllers
                 model.ProjectName = db.Projects.Find(vm.ProjectID).ProjectName;
                 model.DepartmentID = vm.DepartmentID;
                 model.DepartmentName = db.Departments.Find(vm.DepartmentID).DepartmentName;
-                model.MenuJson = JsonConvert.DeserializeObject<RoleAuthorityMenus>(db.RoleAuthoritys.Where(x => x.RoleID == vm.RoleID).FirstOrDefault().MenuJson);
+                var ra=db.RoleAuthoritys.Where(x => x.RoleID == vm.RoleID).FirstOrDefault();
+                if (ra != null)
+                {
+                    model.MenuJson = JsonConvert.DeserializeObject<RoleAuthorityMenus>(ra.MenuJson);
+                }
+                else
+                {
+                    var res = new
+                    {
+                        Result = "该用户对应角色没有配置权限菜单，请联系管理员！"
+                    };
+                    return Json(res);
+                }
+              
             }
             return Json(model);
 
